@@ -1,0 +1,100 @@
+name: CI/CD
+on: [push]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4 # accounts for both CI/CD
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '8'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint
+
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '8'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete-after
+          path: dist/
+          remote_path: /home/ubuntu/dev/beacon-frontend/dist/
+          remote_host: 54.211.64.182
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+
+
+
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/stg'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '8'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run staging
+
+      - name: Deploy
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete-after
+          path: dist/
+          remote_path: /home/ubuntu/staging/beacon-frontend/dist/
+          remote_host: 18.253.165.111
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY_STG }}
+
+
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/prod'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '8'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run prod
+
+      - name: Deploy
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete-after
+          path: dist/
+          remote_path: /home/ubuntu/prod/beacon-frontend/dist/
+          remote_host: 18.253.98.156
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}

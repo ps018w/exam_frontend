@@ -1,0 +1,40 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        type: choice
+        description: Environment to Deploy
+        options:
+        - staging
+        - prod
+      tag:
+        description: Tag to deploy
+        required: true
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 3
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '8'
+        cache: 'npm'
+
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run "${{ github.event.inputs.host }}"
+
+    - name: Deploy
+      uses: burnett01/rsync-deployments@5.1
+      with:
+        switches: -avzr --delete-after
+        path: dist/
+        remote_path: /home/ubuntu/${{ github.event.inputs.host }}/beacon-frontend/dist/
+        remote_host: ${{ github.event.inputs.host == 'staging' && '18.253.165.111' || '18.253.98.156'}}
+        remote_user: ubuntu
+        remote_key: ${{ secrets.SSH_PRIVATE_KEY }}

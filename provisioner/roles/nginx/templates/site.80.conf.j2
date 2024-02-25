@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+server {
+    listen       80;
+    listen       [::]:80;
+    server_name  -;
+
+    access_log   {{ access_log_file }};
+    error_log    {{ error_log_file }};
+
+    client_max_body_size {{ nginx_client_max_body_size }};
+
+    root {{ project_path }}/dist;
+    index index.html;
+    error_page 404 /index.html;
+
+    location / {
+      try_files $uri $uri/index.html index.html;
+    }
+}

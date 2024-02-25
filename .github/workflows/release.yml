@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '8'
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint
+
+      - run: npm run staging
+
+      - uses: papeloto/action-zip@v1
+        with:
+          files: dist/
+          dest: staging-dist.zip
+
+      - run: npm run prod
+
+      - uses: papeloto/action-zip@v1
+        with:
+          files: dist/
+          dest: prod-dist.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            staging-dist.zip
+            prod-dist.zip
