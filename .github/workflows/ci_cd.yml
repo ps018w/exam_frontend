@@ -59,8 +59,8 @@ jobs:
         with:
           switches: -avzr --delete-after
           path: dist/
-          remote_path: /home/ubuntu/staging/beacon-frontend/dist/
-          remote_host: 18.253.165.111
+          remote_path: /home/ubuntu/staging/exam_frontend/dist/
+          remote_host: 18.253.789.111
           remote_user: ubuntu
           remote_key: ${{ secrets.SSH_PRIVATE_KEY_STG }}
 
@@ -85,7 +85,7 @@ jobs:
         with:
           switches: -avzr --delete-after
           path: dist/
-          remote_path: /home/ubuntu/prod/beacon-frontend/dist/
-          remote_host: 18.253.98.156
+          remote_path: /home/ubuntu/prod/exam_frontend/dist/
+          remote_host: 18.253.98.123
           remote_user: ubuntu
           remote_key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
