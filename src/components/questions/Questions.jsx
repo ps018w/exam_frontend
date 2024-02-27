@@ -1,49 +1,49 @@
-// Code 4
 import React, { useState, useEffect } from "react";
 import Pagination from "../pagination/Pagination";
+import "./question.css";
 
-const questionsData = [
-  {
-    id: "1",
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Paris",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "2",
-    question: "What is the capital of Spain?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Madrid",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "3",
-    question: "What is the capital of Italy?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Rome",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "4",
-    question: "What is the capital of Germany?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Berlin",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "5",
-    question: "What is the capital of India?",
-    options: ["Berlin", "Madrid", "Delhi", "Rome"],
-    correctAnswer: "Delhi",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-];
+// const questionsData = [
+//   {
+//     id: "1",
+//     question: "What is the capital of France?",
+//     options: ["Berlin", "Madrid", "Paris", "Rome"],
+//     correctAnswer: "Paris",
+//     is_attempt: false,
+//     is_marked_for_review: false,
+//   },
+//   {
+//     id: "2",
+//     question: "What is the capital of Spain?",
+//     options: ["Berlin", "Madrid", "Paris", "Rome"],
+//     correctAnswer: "Madrid",
+//     is_attempt: false,
+//     is_marked_for_review: false,
+//   },
+//   {
+//     id: "3",
+//     question: "What is the capital of Italy?",
+//     options: ["Berlin", "Madrid", "Paris", "Rome"],
+//     correctAnswer: "Rome",
+//     is_attempt: false,
+//     is_marked_for_review: false,
+//   },
+//   {
+//     id: "4",
+//     question: "What is the capital of Germany?",
+//     options: ["Berlin", "Madrid", "Paris", "Rome"],
+//     correctAnswer: "Berlin",
+//     is_attempt: false,
+//     is_marked_for_review: false,
+//   },
+//   {
+//     id: "5",
+//     question: "What is the capital of India?",
+//     options: ["Berlin", "Madrid", "Delhi", "Rome"],
+//     correctAnswer: "Delhi",
+//     is_attempt: false,
+//     is_marked_for_review: false,
+//   },
+// ];
 
 const Questions = ({ questionsData }) => {
   // State to track attempts and review status for each question---
@@ -96,32 +96,92 @@ const Questions = ({ questionsData }) => {
     initializeQuestionStatus();
   }, []);
 
-  const handlePrevious = () => {
-    if (currentQuestionIndex + 1 < questionsData.length) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+  const handlePrevious = (questionId) => {
+    if (questionId > 0) {
+      const selectedOption = questionStatus[questionId]?.selectedOption;
+
+      if (selectedOption !== undefined) {
+        setQuestionStatus((prevStatus) => ({
+          ...prevStatus,
+          [questionId]: {
+            ...prevStatus[questionId],
+            is_attempt: true,
+            is_marked_for_review: false,
+          },
+          [questionsData[currentQuestionIndex - 1]?.id]: {
+            ...prevStatus[questionsData[currentQuestionIndex - 1]?.id],
+            visited: true,
+          },
+        }));
+        if (currentQuestionIndex > 0) {
+          setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
+      } else {
+        setQuestionStatus((prevStatus) => ({
+          ...prevStatus,
+          [questionId]: {
+            ...prevStatus[questionId],
+            is_attempt: false,
+            is_marked_for_review: false,
+            visited_but_not_attempt: true,
+            visited: false,
+          },
+          [questionsData[currentQuestionIndex - 1]?.id]: {
+            ...prevStatus[questionsData[currentQuestionIndex - 1]?.id],
+            visited: true,
+          },
+        }));
+        if (currentQuestionIndex > 0) {
+          setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
+      }
     }
   };
 
   const handleAttempt = (questionId) => {
-    setQuestionStatus((prevStatus) => ({
-      ...prevStatus,
-      [questionId]: {
-        ...prevStatus[questionId],
-        is_attempt: true,
-        is_marked_for_review: false,
-      },
-      [questionsData[currentQuestionIndex + 1]?.id]: {
-        // Update status of next question---
-        ...prevStatus[questionsData[currentQuestionIndex + 1]?.id],
-        visited: true,
-      },
-    }));
-    // Move to the next question---
-    if (currentQuestionIndex + 1 < questionsData.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    const selectedOption = questionStatus[questionId]?.selectedOption;
+    console.log("line 108==>>", selectedOption);
+
+    if (selectedOption !== undefined) {
+      setQuestionStatus((prevStatus) => ({
+        ...prevStatus,
+        [questionId]: {
+          ...prevStatus[questionId],
+          is_attempt: true,
+          is_marked_for_review: false,
+        },
+        [questionsData[currentQuestionIndex + 1]?.id]: {
+          // Update status of next question---
+          ...prevStatus[questionsData[currentQuestionIndex + 1]?.id],
+          visited: true,
+        },
+      }));
+      // Move to the next question---
+      if (currentQuestionIndex + 1 < questionsData.length) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
+    } else {
+      setQuestionStatus((prevStatus) => ({
+        ...prevStatus,
+        [questionId]: {
+          ...prevStatus[questionId],
+          is_attempt: false,
+          is_marked_for_review: false,
+          visited_but_not_attempt: true,
+          visited: false,
+        },
+        [questionsData[currentQuestionIndex + 1]?.id]: {
+          // Update status of next question---
+          ...prevStatus[questionsData[currentQuestionIndex + 1]?.id],
+          visited: true,
+        },
+      }));
+      if (currentQuestionIndex + 1 < questionsData.length) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
     }
   };
-  console.log("line 123==>>", questionStatus);
+  // console.log("line 123==>>", questionStatus);
 
   // Function to mark a question for review---
   const handleMarkForReview = (questionId) => {
@@ -153,7 +213,7 @@ const Questions = ({ questionsData }) => {
     } else if (status.visited) {
       // console.log(status);
       return status.is_marked_for_review ? "grey" : "skyblue"; // Question visited but not attempted---
-    } else {
+    } else if (status.visited_but_not_attempt) {
       return ""; // Question not visited---
     }
   };
@@ -187,7 +247,13 @@ const Questions = ({ questionsData }) => {
             )}
           </ul>
           {/* Add question content rendering logic */}
-          <button onClick={handlePrevious}>Back</button>
+          <button
+            onClick={() =>
+              handlePrevious(questionsData[currentQuestionIndex].id)
+            }
+          >
+            Back
+          </button>
           <button
             onClick={() =>
               handleAttempt(questionsData[currentQuestionIndex].id)
