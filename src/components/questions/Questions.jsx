@@ -2,6 +2,49 @@ import React, { useState, useEffect } from "react";
 import Pagination from "../pagination/Pagination";
 import "./question.css";
 
+const questionsData = [
+  {
+    id: "1",
+    question: "What is the capital of France?",
+    options: ["Berlin", "Madrid", "Paris", "Rome"],
+    correctAnswer: "Paris",
+    is_attempt: false,
+    is_marked_for_review: false,
+  },
+  {
+    id: "2",
+    question: "What is the capital of Spain?",
+    options: ["Berlin", "Madrid", "Paris", "Rome"],
+    correctAnswer: "Madrid",
+    is_attempt: false,
+    is_marked_for_review: false,
+  },
+  {
+    id: "3",
+    question: "What is the capital of Italy?",
+    options: ["Berlin", "Madrid", "Paris", "Rome"],
+    correctAnswer: "Rome",
+    is_attempt: false,
+    is_marked_for_review: false,
+  },
+  {
+    id: "4",
+    question: "What is the capital of Germany?",
+    options: ["Berlin", "Madrid", "Paris", "Rome"],
+    correctAnswer: "Berlin",
+    is_attempt: false,
+    is_marked_for_review: false,
+  },
+  {
+    id: "5",
+    question: "What is the capital of India?",
+    options: ["Berlin", "Madrid", "Delhi", "Rome"],
+    correctAnswer: "Delhi",
+    is_attempt: false,
+    is_marked_for_review: false,
+  },
+];
+
 // const questionsData = [
 //   {
 //     id: "1",
@@ -45,7 +88,7 @@ import "./question.css";
 //   },
 // ];
 
-const Questions = ({ questionsData }) => {
+const Questions = () => {
   // State to track attempts and review status for each question---
   const [questionStatus, setQuestionStatus] = useState({});
   // State to track the current question index--
@@ -247,27 +290,77 @@ const Questions = ({ questionsData }) => {
             )}
           </ul>
           {/* Add question content rendering logic */}
-          <button
-            onClick={() =>
-              handlePrevious(questionsData[currentQuestionIndex].id)
-            }
-          >
-            Back
-          </button>
-          <button
-            onClick={() =>
-              handleAttempt(questionsData[currentQuestionIndex].id)
-            }
-          >
-            Save and Next
-          </button>
-          <button
-            onClick={() =>
-              handleMarkForReview(questionsData[currentQuestionIndex].id)
-            }
-          >
-            Revisit
-          </button>
+          <div className="buttons">
+            <div>
+              <button
+                onClick={() =>
+                  handlePrevious(questionsData[currentQuestionIndex].id)
+                }
+              >
+                Back
+              </button>
+              <button
+                onClick={() =>
+                  handleAttempt(questionsData[currentQuestionIndex].id)
+                }
+              >
+                Save and Next
+              </button>
+              <button
+                onClick={() =>
+                  handleMarkForReview(questionsData[currentQuestionIndex].id)
+                }
+              >
+                Revisit
+              </button>
+            </div>
+            <div>
+              <button data-toggle="modal" data-target="#exampleModal">
+                Final Submit
+              </button>
+              <div
+                class="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        Are you sure you want to submit !!
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    {/* <div class="modal-body">
+                                            ...
+                                        </div> */}
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <button type="button" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <Pagination

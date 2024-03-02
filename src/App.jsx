@@ -1,199 +1,20 @@
+// import Questions from "./questions/Questions";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Questions from "./components/questions/Questions";
+import Category from "./components/category/Category";
 
-// const questionsData = [
-//   {
-//     question: "What is the capital of France?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Paris",
-//   },
-//   {
-//     question: "What is the capital of Spain?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Madrid",
-//   },
-//   {
-//     question: "What is the capital of Italy?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Rome",
-//   },
-//   {
-//     question: "What is the capital of Germany?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Berlin",
-//   },
-//   {
-//     question: "What is the capital of India?",
-//     options: ["Berlin", "Madrid", "Delhi", "Rome"],
-//     correctAnswer: "Delhi",
-//   },
-// ];
-
-// const questionsData = [
-//   {
-//     question: "What is the capital of France?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Paris",
-//     type: "multipleChoice",
-//   },
-//   {
-//     question: "What is the capital of Spain?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Madrid",
-//     type: "multipleChoice",
-//   },
-//   {
-//     question: "What is the capital of Italy?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Rome",
-//     type: "multipleChoice",
-//   },
-//   {
-//     question: "What is the capital of Germany?",
-//     options: ["Berlin", "Madrid", "Paris", "Rome"],
-//     correctAnswer: "Berlin",
-//     type: "multipleChoice",
-//   },
-//   {
-//     question:
-//       "Provide your opinion on climate change. You can use the textarea for your response.",
-//     type: "subjective",
-//   },
-//   {
-//     question: "Upload an image related to your favorite travel destination.",
-//     type: "subjective",
-//   },
-//   {
-//     question: "What is the capital of India?",
-//     options: ["Berlin", "Madrid", "Delhi", "Rome"],
-//     correctAnswer: "Delhi",
-//     type: "multipleChoice",
-//   },
-// ];
-
-const questionsData = [
+const router = createBrowserRouter([
   {
-    id: "1",
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Paris",
-    is_attempt: false,
-    is_marked_for_review: false,
+    path: "/",
+    element: <Category />,
   },
   {
-    id: "2",
-    question: "What is the capital of Spain?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Madrid",
-    is_attempt: false,
-    is_marked_for_review: false,
+    path: "/question",
+    element: <Questions />,
   },
-  {
-    id: "3",
-    question: "What is the capital of Italy?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Rome",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "4",
-    question: "What is the capital of Germany?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Berlin",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "5",
-    question: "What is the capital of India?",
-    options: ["Berlin", "Madrid", "Delhi", "Rome"],
-    correctAnswer: "Delhi",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "6",
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Paris",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "7",
-    question: "What is the capital of Spain?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Madrid",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "8",
-    question: "What is the capital of Italy?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Rome",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "9",
-    question: "What is the capital of Germany?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Berlin",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "10",
-    question: "What is the capital of India?",
-    options: ["Berlin", "Madrid", "Delhi", "Rome"],
-    correctAnswer: "Delhi",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "11",
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Paris",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "12",
-    question: "What is the capital of Spain?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Madrid",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "13",
-    question: "What is the capital of Italy?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Rome",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "14",
-    question: "What is the capital of Germany?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Berlin",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-  {
-    id: "15",
-    question: "What is the capital of India?",
-    options: ["Berlin", "Madrid", "Delhi", "Rome"],
-    correctAnswer: "Delhi",
-    is_attempt: false,
-    is_marked_for_review: false,
-  },
-];
+]);
 const App = () => {
-  return <Questions questionsData={questionsData} />;
+  return <RouterProvider router={router} />;
 };
 
 export default App;
