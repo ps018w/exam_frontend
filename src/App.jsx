@@ -1,20 +1,26 @@
 // import Questions from "./questions/Questions";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Questions from "./components/questions/Questions";
-import Category from "./components/category/Category";
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Questions from './components/questions/Questions';
+import Category from './components/category/Category';
+import Template from './components/Layout/Template';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Category />,
   },
   {
-    path: "/question",
+    path: '/question',
     element: <Questions />,
   },
 ]);
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Template />
+      {/* <RouterProvider router={router} /> */}
+    </>
+  );
 };
 
 export default App;
