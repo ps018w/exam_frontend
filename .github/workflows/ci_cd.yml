@@ -37,7 +37,7 @@ jobs:
           switches: -avzr --delete-after
           path: dist/
           remote_path: /home/ubuntu/dev/exam_frontend/dist/
-          remote_host: 54.211.64.182
+          remote_host: 44.198.76.137
           remote_user: ubuntu
           remote_key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
 
