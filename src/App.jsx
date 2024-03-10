@@ -3,6 +3,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Questions from './components/questions/Questions';
 import Category from './components/category/Category';
 import Template from './components/Layout/Template';
+import TemplateView from './components/Layout/TemplateView';
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
-      <Template />
+      <TemplateView />
       {/* <RouterProvider router={router} /> */}
     </>
   );
