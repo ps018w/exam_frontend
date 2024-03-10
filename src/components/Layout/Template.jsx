@@ -11,7 +11,7 @@ const Template = ({ categoryId }) => {
     axios
       .get(`http://educomet.com.au/api/questions`)
       .then((res) => {
-        console.log('total questions==>>', res.data.data);
+        // console.log('total questions==>>', res.data.data);
         setTotalQuestions(res.data.data);
       })
       .catch((error) => {
@@ -37,7 +37,7 @@ const Template = ({ categoryId }) => {
 
   const [timer, setTimer] = useState(1800);
 
-  const newArray = [];
+  // const newArray = [];
   useEffect(() => {
     getQuestions(categoryId);
     // const timerInterval = setInterval(() => {
@@ -71,6 +71,18 @@ const Template = ({ categoryId }) => {
       .get(`http://educomet.com.au/api/question/${categoryId}?page=${id - 1}`)
       .then((nextResponse) => {
         console.log('previous=>>', nextResponse.data.results);
+        setQuestionsData(nextResponse.data.results);
+      })
+      .catch((nextError) => {
+        console.error(nextError);
+      });
+  };
+
+  const handlePagination = (id) => {
+    axios
+      .get(`http://educomet.com.au/api/question/${categoryId}?page=${id}`)
+      .then((nextResponse) => {
+        console.log('question==>>', nextResponse.data.results);
         setQuestionsData(nextResponse.data.results);
       })
       .catch((nextError) => {
@@ -376,7 +388,8 @@ const Template = ({ categoryId }) => {
                     {totalQuestions?.map((data, index) => (
                       <div
                         key={data}
-                        className="text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2"
+                        className="text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer"
+                        onClick={() => handlePagination(data.id)}
                       >
                         {data.id}
                       </div>
