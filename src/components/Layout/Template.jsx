@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { User, AlertTriangle } from 'react-feather';
 import axios from 'axios';
 import logo from '../../assets/Images/logo.jpeg';
+import option1 from '../../assets/Images/option_a.png';
+import option2 from '../../assets/Images/option_b.png';
+import option3 from '../../assets/Images/option_c.png';
+import option4 from '../../assets/Images/option_d.png';
 
 const Template = ({ categoryId }) => {
   const [questionsData, setQuestionsData] = useState([]);
@@ -88,6 +92,18 @@ const Template = ({ categoryId }) => {
       .catch((nextError) => {
         console.error(nextError);
       });
+  };
+
+  const imageFunction = (key) => {
+    if (key === 0) {
+      return option1;
+    } else if (key === 1) {
+      return option2;
+    } else if (key === 2) {
+      return option3;
+    } else {
+      return option4;
+    }
   };
 
   // console.log('categoryId==>>', categoryId);
@@ -240,7 +256,7 @@ const Template = ({ categoryId }) => {
                           {question.img !== null && (
                             <img
                               src={question.img}
-                              className="mr-3 sm:h-9 w-full"
+                              className="mr-3 sm:h-9 w-2/3"
                               alt="Flowbite Logo"
                               style={{ height: '160px' }}
                             />
@@ -303,7 +319,7 @@ const Template = ({ categoryId }) => {
                           {question.img !== null && (
                             <img
                               src={question.img}
-                              className="mr-3 sm:h-9 w-full"
+                              className="mr-3 sm:h-9 w-2/3"
                               alt="Flowbite Logo"
                               style={{ height: '160px' }}
                             />
@@ -322,10 +338,10 @@ const Template = ({ categoryId }) => {
                                 name="fav_language"
                               />
                             )}
-                            {option.img !== null ? (
+                            {option.img === null ? (
                               <label htmlFor="key1" className="pl-2">
                                 <div>
-                                  <img src={option.img} />
+                                  <img src={imageFunction(index)} />
                                 </div>
                               </label>
                             ) : (
@@ -445,7 +461,7 @@ const Template = ({ categoryId }) => {
                 </div>
                 <div className="bg-sky-300 flex gap-2 px-4 py-2 mb-4">
                   <span className="font-semibold">SECTION :</span>
-                  <span>English</span>
+                  <span>{totalQuestions[0]?.category}</span>
                 </div>
                 <div className="px-4 flex flex-col gap-4">
                   <div className="gap-4 grid grid-cols-12">
