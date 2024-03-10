@@ -11,7 +11,7 @@ const Template = ({ categoryId }) => {
     axios
       .get(`http://educomet.com.au/api/questions`)
       .then((res) => {
-        // console.log('total questions==>>', res.data.data);
+        console.log('total questions==>>', res.data.data);
         setTotalQuestions(res.data.data);
       })
       .catch((error) => {
@@ -222,14 +222,58 @@ const Template = ({ categoryId }) => {
                     <div className="mb-3">
                       <strong>{question.question}</strong>
                     </div>
+                    {/* {question.question_type === 'MCQ' &&
+                      question.answers.map((option, index) => (
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-baseline">
+                            <input type="checkbox" id="key1" name="fav_language" />
+                            <label htmlFor="key1" className="pl-2">
+                              {option.answer}
+                            </label>
+                          </div>
+                        </div>
+                      ))} */}
+
+                    {question.question_type === 'MCQ' && (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-baseline">
+                          {question.img !== null && (
+                            <img
+                              src={question.img}
+                              className="mr-3 sm:h-9 w-full"
+                              alt="Flowbite Logo"
+                              style={{ height: '160px' }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
                     {question.question_type === 'MCQ' &&
                       question.answers.map((option, index) => (
                         <div className="flex flex-col gap-4">
                           <div className="flex items-baseline">
-                            <input type="radio" id="key1" name="fav_language" />
-                            <label htmlFor="key1" className="pl-2">
-                              {option.answer}
-                            </label>
+                            {option.answer !== null && (
+                              <input
+                                type="checkbox"
+                                id="key1"
+                                name="fav_language"
+                              />
+                            )}
+                            {option.img !== null ? (
+                              <label htmlFor="key1" className="pl-2">
+                                <div>
+                                  <img src={option.img} />
+                                </div>
+                              </label>
+                            ) : (
+                              <>
+                                {option.answer !== null && (
+                                  <label htmlFor="key1" className="pl-2">
+                                    <div>{option.answer}</div>
+                                  </label>
+                                )}
+                              </>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -253,31 +297,51 @@ const Template = ({ categoryId }) => {
                         />
                       </div>
                     )}
-                    {question.question_type === 'PC' && (
+                    {question.question_type === 'SQ' && (
                       <div className="flex flex-col gap-4">
                         <div className="flex items-baseline">
-                          <img
-                            src={question.img}
-                            className="mr-3 sm:h-9 w-full"
-                            alt="Flowbite Logo"
-                            style={{ height: '160px' }}
-                          />
+                          {question.img !== null && (
+                            <img
+                              src={question.img}
+                              className="mr-3 sm:h-9 w-full"
+                              alt="Flowbite Logo"
+                              style={{ height: '160px' }}
+                            />
+                          )}
                         </div>
                       </div>
                     )}
-                    {question.question_type === 'PC' &&
+                    {question.question_type === 'SQ' &&
                       question.answers.map((option, index) => (
                         <div className="flex flex-col gap-4">
                           <div className="flex items-baseline">
-                            <input type="radio" id="key1" name="fav_language" />
-                            <label htmlFor="key1" className="pl-2">
-                              {option.answer}
-                            </label>
+                            {option.answer !== null && (
+                              <input
+                                type="radio"
+                                id="key1"
+                                name="fav_language"
+                              />
+                            )}
+                            {option.img !== null ? (
+                              <label htmlFor="key1" className="pl-2">
+                                <div>
+                                  <img src={option.img} />
+                                </div>
+                              </label>
+                            ) : (
+                              <>
+                                {option.answer !== null && (
+                                  <label htmlFor="key1" className="pl-2">
+                                    <div>{option.answer}</div>
+                                  </label>
+                                )}
+                              </>
+                            )}
                           </div>
                         </div>
                       ))}
                   </div>
-                  {question.question_type === 'SQ' && (
+                  {question.question_type === 'PC' && (
                     <div className="flex-1 p-4">
                       <div className="mb-3">Question:</div>
                       <div className="mb-3">
@@ -286,8 +350,8 @@ const Template = ({ categoryId }) => {
                         </strong>
                       </div>
                       {/* <h3>Turn the tables</h3> */}
-                      {question.answers.map((option, index) => (
-                        <div className="flex flex-col gap-4">
+                      {question.answers.map((option, subIndex) => (
+                        <div className="flex flex-col gap-4" key={subIndex}>
                           <div className="flex items-baseline">
                             <input type="radio" id="key1" name="fav_language" />
                             <label htmlFor="key1" className="pl-2">
