@@ -2,26 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { User, AlertTriangle } from 'react-feather';
 import axios from 'axios';
 import logo from '../../assets/Images/logo.jpeg';
-import option1 from '../../assets/Images/option_a.png';
-import option2 from '../../assets/Images/option_b.png';
-import option3 from '../../assets/Images/option_c.png';
-import option4 from '../../assets/Images/option_d.png';
+import Pagination from './Pagination';
+// import Timer from './Timer';
+// import option1 from '../../assets/Images/option_a.png';
+// import option2 from '../../assets/Images/option_b.png';
+// import option3 from '../../assets/Images/option_c.png';
+// import option4 from '../../assets/Images/option_d.png';
 
 const Template = ({ categoryId }) => {
   const [questionsData, setQuestionsData] = useState([]);
+  const [questionReq, setQuestionReq] = useState([]);
   const [totalQuestions, setTotalQuestions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  const allQuestions = () => {
-    axios
-      .get(`http://educomet.com.au/api/questions`)
-      .then((res) => {
-        console.log('total questions==>>', res.data.data);
-        setTotalQuestions(res.data.data);
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
+  // const allQuestions = () => {
+  //   axios
+  //     .get(`http://educomet.com.au/api/questions`)
+  //     .then((res) => {
+  //       console.log('total questions==>>', res.data.data);
+  //       setTotalQuestions(res.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log('error', error);
+  //     });
+  // };
 
   const getQuestions = (id) => {
     // console.log('id1==>>', id);
@@ -39,7 +43,7 @@ const Template = ({ categoryId }) => {
     }
   };
 
-  const [timer, setTimer] = useState(1800);
+  // const [timer, setTimer] = useState(1800);
 
   // const newArray = [];
   useEffect(() => {
@@ -54,11 +58,11 @@ const Template = ({ categoryId }) => {
   //   newArray.push(i);
   // }
 
-  useEffect(() => {
-    allQuestions();
-  }, []);
+  // useEffect(() => {
+  //   allQuestions();
+  // }, []);
 
-  const handleSaveAndNext = (id) => {
+  const handleNext = (id) => {
     axios
       .get(`http://educomet.com.au/api/question/${categoryId}?page=${id + 1}`)
       .then((nextResponse) => {
@@ -70,6 +74,46 @@ const Template = ({ categoryId }) => {
       });
   };
 
+  // const handleSubmit = async (id, optionId) => {
+  //   const userAnswer = {
+  //     question: id,
+  //     user_answer: [optionId],
+  //     // time_taken: 'your_time_value',
+  //   };
+  //   console.log(userAnswer);
+
+  //   try {
+  //     const token =
+  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwMjY4NjA0LCJpYXQiOjE3MTAyNjU2MDQsImp0aSI6IjdmZTdlYjViMmUzZTQ5ZWI4ODUzY2ZjMTZkZTA1ODMyIiwidXNlcl9pZCI6Mn0.lLZb6q2V5wNQJ-Q86YNqKBuNjb_HkoF4dCzqv6E763U';
+  //     const response = await axios.post(
+  //       'http://educomet.com.au/api/user_answer/',
+  //       userAnswer,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     );
+
+  //     axios
+  //       .get(`http://educomet.com.au/api/question/${categoryId}?page=${id + 1}`)
+  //       .then((nextResponse) => {
+  //         console.log('next==>>', nextResponse.data.results);
+  //         setQuestionsData(nextResponse.data.results);
+  //       })
+  //       .catch((nextError) => {
+  //         console.error(nextError);
+  //       });
+
+  //     // Handle the response as needed
+  //     console.log('Response:', response.data);
+  //   } catch (error) {
+  //     // Handle errors
+  //     console.error('Error:', error);
+  //   }
+  // };
+
   const handlePrevious = (id) => {
     axios
       .get(`http://educomet.com.au/api/question/${categoryId}?page=${id - 1}`)
@@ -80,6 +124,16 @@ const Template = ({ categoryId }) => {
       .catch((nextError) => {
         console.error(nextError);
       });
+  };
+
+  const handleChange = (e, optionId) => {
+    // e.preventDefault();
+    if (e.target.checked) {
+      setSelectedOption(optionId);
+    }
+    // const selectedOptionId = e.target.value;
+
+    // console.log('optionSelected-->>', e.target.value);
   };
 
   const handlePagination = (id) => {
@@ -94,19 +148,42 @@ const Template = ({ categoryId }) => {
       });
   };
 
-  const imageFunction = (key) => {
-    if (key === 0) {
-      return option1;
-    } else if (key === 1) {
-      return option2;
-    } else if (key === 2) {
-      return option3;
-    } else {
-      return option4;
-    }
+  const allQuestions = () => {
+    axios
+      .get(`http://educomet.com.au/api/questions`)
+      .then((res) => {
+        console.log('total questions==>>', res.data.data);
+        setTotalQuestions(res.data.data);
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
   };
 
+  useEffect(() => {
+    allQuestions();
+  }, []);
+
+  // const handleSaveAndNext = (ques) => {
+  //   handleNext(ques.id);
+  //   handleSubmit(ques.id, ques.option[index].id);
+  // };
+
+  // const imageFunction = (key) => {
+  //   if (key === 0) {
+  //     return option1;
+  //   } else if (key === 1) {
+  //     return option2;
+  //   } else if (key === 2) {
+  //     return option3;
+  //   } else {
+  //     return option4;
+  //   }
+  // };
+
   // console.log('categoryId==>>', categoryId);
+
+  // console.log('selectedOption-->>', selectedOption);
 
   return (
     <div className="flex flex-col h-screen overflow-y-hidden">
@@ -131,7 +208,7 @@ const Template = ({ categoryId }) => {
                 className="flex items-center gap-5 w-1/2 justify-between"
               >
                 <div id="timer" className="font-semibold">
-                  <div className="flex gap-4">
+                  {/* <div className="flex gap-4">
                     <span>Section Time</span>
                     <div className="flex gap-2 items-center">
                       <span className="bg-black text-white px-[5px] text-sm">
@@ -142,7 +219,8 @@ const Template = ({ categoryId }) => {
                         {timer % 60}
                       </span>
                     </div>
-                  </div>
+                  </div> */}
+                  {/* <Timer /> */}
                 </div>
                 <div className="flex gap-4">
                   <button className="border border-cyan-500 px-4 py-2 text-cyan-500 rounded hover:bg-cyan-500 hover:text-white">
@@ -256,9 +334,10 @@ const Template = ({ categoryId }) => {
                           {question.img !== null && (
                             <img
                               src={question.img}
-                              className="mr-3 sm:h-9 w-2/3"
+                              className="mr-3"
+                              // className="mr-3 sm:h-9 w-2/3"
                               alt="Flowbite Logo"
-                              style={{ height: '160px' }}
+                              // style={{ height: '160px' }}
                             />
                           )}
                         </div>
@@ -319,9 +398,8 @@ const Template = ({ categoryId }) => {
                           {question.img !== null && (
                             <img
                               src={question.img}
-                              className="mr-3 sm:h-9 w-2/3"
+                              className="mr-3"
                               alt="Flowbite Logo"
-                              style={{ height: '160px' }}
                             />
                           )}
                         </div>
@@ -330,18 +408,27 @@ const Template = ({ categoryId }) => {
                     {question.question_type === 'SQ' &&
                       question.answers.map((option, index) => (
                         <div className="flex flex-col gap-4">
-                          <div className="flex items-baseline">
-                            {option.answer !== null && (
-                              <input
-                                type="radio"
-                                id="key1"
-                                name="fav_language"
-                              />
-                            )}
-                            {option.img === null ? (
+                          <div className="flex items-baseline" key={index}>
+                            <input
+                              type="radio"
+                              id={option.id}
+                              name="fav_language"
+                              value={selectedOption}
+                              defaultChecked={selectedOption === option.id}
+                              onChange={(e) => handleChange(e, option.id)}
+                            />
+                            {console.log(selectedOption === option.id)}
+                            {/* {option.img === null ? (
                               <label htmlFor="key1" className="pl-2">
                                 <div>
                                   <img src={imageFunction(index)} />
+                                </div>
+                              </label>
+                            ) : ( */}
+                            {option.img !== null ? (
+                              <label htmlFor="key1" className="pl-4">
+                                <div>
+                                  <img src={option.img} />
                                 </div>
                               </label>
                             ) : (
@@ -369,13 +456,53 @@ const Template = ({ categoryId }) => {
                       {question.answers.map((option, subIndex) => (
                         <div className="flex flex-col gap-4" key={subIndex}>
                           <div className="flex items-baseline">
-                            <input type="radio" id="key1" name="fav_language" />
-                            <label htmlFor="key1" className="pl-2">
-                              {option.answer}
-                            </label>
+                            {question.img !== null && (
+                              <img
+                                src={question.img}
+                                className="mr-3 sm:h-9 w-2/3"
+                                alt="Flowbite Logo"
+                                style={{ height: '160px' }}
+                              />
+                            )}
                           </div>
                         </div>
                       ))}
+                      {question.question_type === 'PC' &&
+                        question.answers.map((option, index) => (
+                          <div className="flex flex-col gap-4">
+                            <div className="flex items-baseline">
+                              {option.answer !== null && (
+                                <input
+                                  type="radio"
+                                  id="key1"
+                                  name="fav_language"
+                                />
+                              )}
+                              {/* {option.img === null ? (
+                              <label htmlFor="key1" className="pl-2">
+                                <div>
+                                  <img src={imageFunction(index)} />
+                                </div>
+                              </label>
+                            ) : ( */}
+                              {option.img !== null ? (
+                                <label htmlFor="key1" className="pl-2">
+                                  <div>
+                                    <img src={option.img} />
+                                  </div>
+                                </label>
+                              ) : (
+                                <>
+                                  {option.answer !== null && (
+                                    <label htmlFor="key1" className="pl-2">
+                                      <div>{option.answer}</div>
+                                    </label>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   )}
                 </div>
@@ -401,7 +528,16 @@ const Template = ({ categoryId }) => {
                       </button>
                       <button
                         className="bg-cyan-500 text-white px-3 py-1 rounded"
-                        onClick={() => handleSaveAndNext(question.id)}
+                        onClick={() => {
+                          handleNext(question.id);
+                          // handleSubmit(question.id, question.answers[index].id);
+                        }}
+                        // onClick={() =>
+                        //   handleSubmit(
+                        //     question?.id,
+                        //     question?.answers[index]?.id,
+                        //   )
+                        // }
                       >
                         Save & Next
                       </button>
@@ -413,17 +549,6 @@ const Template = ({ categoryId }) => {
           ))}
           <div id="leftSection" className="col-span-3 bg-cyan-50">
             <div className="flex flex-col min-h-screen">
-              {/* <div
-                id="leftSectionHeading"
-                className="border-l-0 border-r-0 border-2 px-5 h-[60px] leading-[3.5]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="bg-cyan-500 flex items-center overflow-hidden rounded-full h-[35px] w-[35px] justify-center">
-                    <User size="18" color="white" />
-                  </div>
-                  <div className="font-semibold">Balram</div>
-                </div>
-              </div> */}
               <div className="flex-1">
                 <div className="border-b grid grid-cols-12 items-center gap-y-4 gap-x-2 px-3 py-4 text-[13px]">
                   <div className="flex gap-2 items-center col-span-6">
@@ -433,12 +558,6 @@ const Template = ({ categoryId }) => {
 
                     <span className="text-nowrap">Answered</span>
                   </div>
-                  {/* <div className="flex gap-2 items-center col-span-6">
-                    <span className="bg-red-500 flex  items-center px-2 rounded-full text-white text-xs h-6">
-                      0
-                    </span>
-                    <span className="text-nowrap">Marked</span>
-                  </div> */}
                   <div className="flex gap-2 col-span-6">
                     <span className="border border-gray-600 p-1 text-xs bg-white">
                       29
@@ -451,13 +570,7 @@ const Template = ({ categoryId }) => {
                     </span>
                     <span className="text-nowrap">Answered for revisit</span>
                   </div>
-                  <div className="flex gap-2 items-center col-span-6">
-                    {/* <div className="w-[35px] text-center text-white h-[22px] rounded-bl-full rounded-br-full bg-amber-500">
-                      0
-                    </div>
-
-                    <span>Not Answered</span> */}
-                  </div>
+                  <div className="flex gap-2 items-center col-span-6"></div>
                 </div>
                 <div className="bg-sky-300 flex gap-2 px-4 py-2 mb-4">
                   <span className="font-semibold">SECTION :</span>
@@ -475,28 +588,17 @@ const Template = ({ categoryId }) => {
                       </div>
                     ))}
                   </div>
-                  <div>
-                    {/* <button className="bg-cyan-500 text-white px-3 py-1 rounded">
-                      Submit Section
-                    </button> */}
-                  </div>
+                  <div></div>
                 </div>
               </div>
               <div className="border sticky bottom-0 p-4">
-                {/* <div className="flex gap-4 items-center justify-between mb-3">
-                  <button className="bg-sky-300 px-3 py-1 rounded w-1/2">
-                    Question Paper
-                  </button>
-                  <button className="bg-sky-300 px-3 py-1 rounded w-1/2">
-                    Instructions
-                  </button>
-                </div> */}
                 <button className="bg-cyan-500 text-white px-3 py-1 rounded w-full">
                   Final Submit
                 </button>
               </div>
             </div>
           </div>
+          {/* <Pagination categoryId={categoryId} /> */}
         </div>
       </div>
     </div>
