@@ -7,3 +7,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.loginForm {
+    min-width: 385px;
+    
+}
+
+@media only screen and (max-width: 600px) {
+    .loginImgBlock {
+        width: 100%;
+    }
+}
+
+.loginImgBlock {
+    width: 380px;
+    height: 360px;
+}
+
+.loginImg {
+    width: 386px;
+    height: 386px;
+    /* width: 380px;
+    height: 380px; */
+    background-blend-mode:overlay;
+    background-size: cover;
+}
+.sc-theme-color{
+    /* background-color: #9c27b0; */
+    background-color: #4F46E5;
+}
+.text-theme-color{
+    /* color: #9c27b0; */
+    color: #4F46E5;
+
+}
+
+.card-wrapper-md {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+  }
+  
+  .card-wrapper-md > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+  }
+  
+  .card-wrapper-md {
+    border-radius: 0.5rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    padding: 2.5rem;
+    text-align: center;
+    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+  
+  @media (min-width: 768px) {
+    .card-wrapper-md {
+      margin-left: 0px;
+      margin-right: 0px;
+      width: 34rem;
+    }
+  }
+
+ 
+
+  
