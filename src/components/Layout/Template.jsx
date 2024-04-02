@@ -3,127 +3,132 @@ import { User, AlertTriangle } from 'react-feather';
 import axios from 'axios';
 import logo from '../../assets/Images/logo.jpeg';
 import Pagination from './Pagination';
-// import Timer from './Timer';
-// import option1 from '../../assets/Images/option_a.png';
-// import option2 from '../../assets/Images/option_b.png';
-// import option3 from '../../assets/Images/option_c.png';
-// import option4 from '../../assets/Images/option_d.png';
+import { current } from '@reduxjs/toolkit';
+import { fetchFirstQuestions } from '../../Feature/questionsSlice';
+import { fetchNextQuestion } from '../../Feature/questionsSlice';
+import { fetchPreviousQuestion } from '../../Feature/questionsSlice';
+import { fetchQuestionsByPagination } from '../../Feature/questionsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Template = ({ categoryId }) => {
-  const [questionsData, setQuestionsData] = useState([]);
-  const [questionReq, setQuestionReq] = useState([]);
   const [totalQuestions, setTotalQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // const allQuestions = () => {
-  //   axios
-  //     .get(`http://educomet.com.au/api/questions`)
-  //     .then((res) => {
-  //       console.log('total questions==>>', res.data.data);
-  //       setTotalQuestions(res.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log('error', error);
-  //     });
-  // };
+  const initialQuestions = totalQuestions.map((question) => ({
+    ...question,
+    attempted: false,
+  }));
+  const [questions, setQuestions] = useState(initialQuestions);
+  // const [startTime, setStartTime] = useState(4);
+  // const [endTime, setEndTime] = useState(4);
 
-  const getQuestions = (id) => {
-    // console.log('id1==>>', id);
-    if (id !== undefined) {
-      // console.log('id2==>>', id);
-      axios
-        .get(`http://educomet.com.au/api/question/${id}`)
-        .then((res) => {
-          // console.log('1st question==>>', res.data.results);
-          setQuestionsData(res.data.results);
-        })
-        .catch((error) => {
-          console.log('error', error);
-        });
-    }
-  };
+  const dispatch = useDispatch();
 
   // const [timer, setTimer] = useState(1800);
 
   // const newArray = [];
-  useEffect(() => {
-    getQuestions(categoryId);
-    // const timerInterval = setInterval(() => {
-    //   setTimer((prevTimer) => prevTimer - 1);
-    // }, 1000);
+  // useEffect(() => {
+  //   getQuestions(categoryId);
+  //   // const timerInterval = setInterval(() => {
+  //   //   setTimer((prevTimer) => prevTimer - 1);
+  //   // }, 1000);
 
-    // return () => clearInterval(timerInterval);
-  }, [categoryId]);
+  //   // return () => clearInterval(timerInterval);
+  // }, [categoryId]);
   // for (let i = 1; i <= 30; i++) {
   //   newArray.push(i);
   // }
 
-  // useEffect(() => {
-  //   allQuestions();
-  // }, []);
+  const { allQuestion, loading, error } = useSelector(
+    (state) => state.getQuestions,
+  );
+
+  useEffect(() => {
+    dispatch(fetchFirstQuestions(categoryId));
+  }, [dispatch, categoryId]);
 
   const handleNext = (id) => {
-    axios
-      .get(`http://educomet.com.au/api/question/${categoryId}?page=${id + 1}`)
-      .then((nextResponse) => {
-        console.log('next==>>', nextResponse.data.results);
-        setQuestionsData(nextResponse.data.results);
-      })
-      .catch((nextError) => {
-        console.error(nextError);
-      });
+    const nextId = id + 1;
+    dispatch(fetchNextQuestion({ categoryId, nextId }));
   };
 
-  // const handleSubmit = async (id, optionId) => {
-  //   const userAnswer = {
-  //     question: id,
-  //     user_answer: [optionId],
-  //     // time_taken: 'your_time_value',
-  //   };
-  //   console.log(userAnswer);
+  // const timeSpent = endTime - startTime;
+  // const secondsSpent = Math.abs(timeSpent);
+  // console.log('secondsSpent', secondsSpent);
 
-  //   try {
-  //     const token =
-  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwMjY4NjA0LCJpYXQiOjE3MTAyNjU2MDQsImp0aSI6IjdmZTdlYjViMmUzZTQ5ZWI4ODUzY2ZjMTZkZTA1ODMyIiwidXNlcl9pZCI6Mn0.lLZb6q2V5wNQJ-Q86YNqKBuNjb_HkoF4dCzqv6E763U';
-  //     const response = await axios.post(
-  //       'http://educomet.com.au/api/user_answer/',
-  //       userAnswer,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           'Content-Type': 'application/json',
-  //         },
-  //       },
-  //     );
+  const handleSubmit = async (id, optionId) => {
+    const userAnswer = {
+      question: id,
+      user_answer: [optionId],
+      time_taken: 'your_time_value',
+    };
+    console.log('userAnswer==>>', userAnswer);
 
-  //     axios
-  //       .get(`http://educomet.com.au/api/question/${categoryId}?page=${id + 1}`)
-  //       .then((nextResponse) => {
-  //         console.log('next==>>', nextResponse.data.results);
-  //         setQuestionsData(nextResponse.data.results);
-  //       })
-  //       .catch((nextError) => {
-  //         console.error(nextError);
-  //       });
+    // Access token
+const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyMDgwNTIwLCJpYXQiOjE3MTIwNzc1MjAsImp0aSI6IjhkYWY3ZDRmY2U4MzRkNzQ4NTYxZGVkMGI2YWFjMThlIiwidXNlcl9pZCI6Mn0.A50zM552eHjo-p3BXJ_6qNJYbl4WAQUBrj9t52XS9pw';
 
-  //     // Handle the response as needed
-  //     console.log('Response:', response.data);
-  //   } catch (error) {
-  //     // Handle errors
-  //     console.error('Error:', error);
-  //   }
-  // };
+// Axios POST request with access token in headers
+  axios.post('http://44.221.201.10/api/user_answer/', userAnswer, {
+  headers: {
+    'Authorization': Bearer `${accessToken}`,
+    'Content-Type': 'application/json' // If required by your API
+  }
+})
+  .then((response) => {
+    console.log('Response:', response.data);
+    // Handle response data here
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here
+  });
+
+      // const token =
+      //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExODkwODE2LCJpYXQiOjE3MTE4ODc4MTYsImp0aSI6IjcxMTY3YmQzZGRkZjRlNTJhMmVjZTNiOTU3YTIwZDI4IiwidXNlcl9pZCI6M30.QcVME2a22xVZkvLhSbMSXR7AWZB9WF_-Rmqm9BmQHEkeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExODkwODE2LCJpYXQiOjE3MTE4ODc4MTYsImp0aSI6IjcxMTY3YmQzZGRkZjRlNTJhMmVjZTNiOTU3YTIwZDI4IiwidXNlcl9pZCI6M30.QcVME2a22xVZkvLhSbMSXR7AWZB9WF_-Rmqm9BmQHEk';
+      // const response = await axios
+      //   .post('http://44.221.201.10/api/user_answer/', userAnswer, {
+      //     headers: {
+      //       Authorization: Bearer`${token}`,
+      //       'Content-Type': 'application/json',
+      //     },
+      //   })
+
+      // axios
+      // .post("http://44.221.201.10/api/user_answer/", userAnswer)
+      // .then((nextResponse) => {
+      //   console.log('next==>>', nextResponse.data.results);
+      //   setQuestionsData(nextResponse.data.results);
+      // })
+      // .catch((nextError) => {
+      //   console.error(nextError);
+      // });
+
+        // .then((isSucess) => {
+        //   if (isSucess) {
+        //     const nextId = id + 1;
+        //     dispatch(fetchNextQuestion({ categoryId, nextId }));
+        //   }
+        // });
+
+      // axios
+      //   .get(`http://44.221.201.10/api/question/${categoryId}?page=${id + 1}`)
+      //   .then((nextResponse) => {
+      //     console.log('next==>>', nextResponse.data.results);
+      //     setQuestionsData(nextResponse.data.results);
+      //   })
+      //   .catch((nextError) => {
+      //     console.error(nextError);
+      //   });
+
+      // Handle the response as needed
+      console.log('Response:', response.data);
+    
+    // console.log("shubham srivastava")
+  };
 
   const handlePrevious = (id) => {
-    axios
-      .get(`http://educomet.com.au/api/question/${categoryId}?page=${id - 1}`)
-      .then((nextResponse) => {
-        console.log('previous=>>', nextResponse.data.results);
-        setQuestionsData(nextResponse.data.results);
-      })
-      .catch((nextError) => {
-        console.error(nextError);
-      });
+    const previousId = id - 1;
+    dispatch(fetchPreviousQuestion({ categoryId, previousId }));
   };
 
   const handleChange = (e, optionId) => {
@@ -137,20 +142,12 @@ const Template = ({ categoryId }) => {
   };
 
   const handlePagination = (id) => {
-    axios
-      .get(`http://educomet.com.au/api/question/${categoryId}?page=${id}`)
-      .then((nextResponse) => {
-        console.log('question==>>', nextResponse.data.results);
-        setQuestionsData(nextResponse.data.results);
-      })
-      .catch((nextError) => {
-        console.error(nextError);
-      });
+    dispatch(fetchQuestionsByPagination({ categoryId, id }));
   };
 
   const allQuestions = () => {
     axios
-      .get(`http://educomet.com.au/api/questions`)
+      .get('http://44.221.201.10/api/questions')
       .then((res) => {
         console.log('total questions==>>', res.data.data);
         setTotalQuestions(res.data.data);
@@ -163,27 +160,6 @@ const Template = ({ categoryId }) => {
   useEffect(() => {
     allQuestions();
   }, []);
-
-  // const handleSaveAndNext = (ques) => {
-  //   handleNext(ques.id);
-  //   handleSubmit(ques.id, ques.option[index].id);
-  // };
-
-  // const imageFunction = (key) => {
-  //   if (key === 0) {
-  //     return option1;
-  //   } else if (key === 1) {
-  //     return option2;
-  //   } else if (key === 2) {
-  //     return option3;
-  //   } else {
-  //     return option4;
-  //   }
-  // };
-
-  // console.log('categoryId==>>', categoryId);
-
-  // console.log('selectedOption-->>', selectedOption);
 
   return (
     <div className="flex flex-col h-screen overflow-y-hidden">
@@ -237,7 +213,7 @@ const Template = ({ categoryId }) => {
           </nav>
         </header>
         <div className="grid grid-cols-12 flex-1">
-          {questionsData.map((question, index) => (
+          {allQuestion.map((question, index) => (
             <div key={question.id} id="rightSection" className="col-span-9">
               <div
                 id="rightSectionHeading"
@@ -417,7 +393,7 @@ const Template = ({ categoryId }) => {
                               defaultChecked={selectedOption === option.id}
                               onChange={(e) => handleChange(e, option.id)}
                             />
-                            {console.log(selectedOption === option.id)}
+                            {/* {console.log(selectedOption === option.id)} */}
                             {/* {option.img === null ? (
                               <label htmlFor="key1" className="pl-2">
                                 <div>
@@ -529,8 +505,8 @@ const Template = ({ categoryId }) => {
                       <button
                         className="bg-cyan-500 text-white px-3 py-1 rounded"
                         onClick={() => {
-                          handleNext(question.id);
-                          // handleSubmit(question.id, question.answers[index].id);
+                          // handleNext(question.id);
+                          handleSubmit(question.id, question.answers[index].id);
                         }}
                         // onClick={() =>
                         //   handleSubmit(
@@ -598,7 +574,7 @@ const Template = ({ categoryId }) => {
               </div>
             </div>
           </div>
-          {/* <Pagination categoryId={categoryId} /> */}
+          {/* <Pagination /> */}
         </div>
       </div>
     </div>

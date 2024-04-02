@@ -2,13 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function Pagination({categoryId}) {
-  console.log(categoryId)
+function Pagination({ categoryId }) {
+  console.log(categoryId);
   const [totalQuestions, setTotalQuestions] = useState([]);
 
   const allQuestions = () => {
     axios
-      .get(`http://educomet.com.au/api/questions`)
+      .get(`http://44.221.201.10/api/questions`)
       .then((res) => {
         // console.log('total questions==>>', res.data.data);
         setTotalQuestions(res.data.data);
@@ -24,7 +24,7 @@ function Pagination({categoryId}) {
 
   const handlePagination = (id) => {
     axios
-      .get(`http://educomet.com.au/api/question/${categoryId}?page=${id}`)
+      .get(`http://44.221.201.10/api/question/${categoryId}?page=${id}`)
       .then((nextResponse) => {
         console.log('question==>>', nextResponse.data.results);
         setQuestionsData(nextResponse.data.results);
