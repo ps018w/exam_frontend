@@ -44,6 +44,38 @@ export const fetchNextQuestion = createAsyncThunk(
     }
   );
 
+  export const fetchOptionByQuestion = createAsyncThunk(
+    'fetchOptionByQuestion',
+    async ({ id }) => {
+      const response = await axios.get(`http://44.221.201.10/api/user_answer/${id}`, {
+        headers: {
+             'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("key")).accessToken}`,
+      },
+    })
+    console.log("data==>>", response)
+
+      return response.data.results;
+    }
+  );
+
+  // export const fetchOptionByQuestion = createAsyncThunk(
+  //   'fetchOptionByQuestion',
+  //   async ( id ) => {
+  //     console.log("questionId==>>", questionId)
+  //     try {
+  //       const response = await axios.get(http://44.221.201.10/api/user_answer/${id}, {
+  //         headers: {
+  //           'Authorization': Bearer ${JSON.parse(sessionStorage.getItem("key")).accessToken},
+  //         },
+  //       });
+  //       return response.data.results;
+  //     } catch (error) {
+  //       console.error('Error fetching options:', error);
+  //       throw error;
+  //     }
+  //   }
+  // );
+
 // Define question slice
 const questionSlice = createSlice({
   name: 'questionsData',
@@ -96,7 +128,20 @@ extraReducers: (builder) => {
       .addCase(fetchQuestionsByPagination.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      });
+      })
+      .addCase(fetchOptionByQuestion.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOptionByQuestion.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allQuestion = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchOptionByQuestion.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
   },
 });
 

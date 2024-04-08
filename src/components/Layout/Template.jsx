@@ -4,15 +4,20 @@ import axios from 'axios';
 import logo from '../../assets/Images/logo.jpeg';
 import Pagination from './Pagination';
 import { current } from '@reduxjs/toolkit';
-import { fetchFirstQuestions } from '../../Feature/questionsSlice';
+import { fetchFirstQuestions, fetchOptionByQuestion } from '../../Feature/questionsSlice';
 import { fetchNextQuestion } from '../../Feature/questionsSlice';
 import { fetchPreviousQuestion } from '../../Feature/questionsSlice';
 import { fetchQuestionsByPagination } from '../../Feature/questionsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Template = ({ categoryId }) => {
+  const [loadingSymbol, setLoadingSymbol] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [markedForRevisit, setMarkedForRevisit] = useState([]);
+  const [saveAndNext, setSaveAndNext] = useState([]);
+  // const [currentQuestionId, setCurrentQuestionId] = useState(null);
+
 
   const initialQuestions = totalQuestions.map((question) => ({
     ...question,
@@ -47,91 +52,65 @@ const Template = ({ categoryId }) => {
     dispatch(fetchFirstQuestions(categoryId));
   }, [dispatch, categoryId]);
 
-  const handleNext = (id) => {
-    const nextId = id + 1;
-    dispatch(fetchNextQuestion({ categoryId, nextId }));
-  };
+  // const handleNext = (id) => {
+  //   const nextId = id + 1;
+  //   dispatch(fetchNextQuestion({ categoryId, nextId }));
+  // };
 
   // const timeSpent = endTime - startTime;
   // const secondsSpent = Math.abs(timeSpent);
   // console.log('secondsSpent', secondsSpent);
 
-  const handleSubmit = async (id, optionId) => {
+  const handleSubmit = async (id) => {
     const userAnswer = {
       question: id,
-      user_answer: [optionId],
-      time_taken: 'your_time_value',
+      user_answer: [selectedOption],
+      // time_taken: 'your_time_value',
     };
     console.log('userAnswer==>>', userAnswer);
 
-    // Access token
-const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyMDgwNTIwLCJpYXQiOjE3MTIwNzc1MjAsImp0aSI6IjhkYWY3ZDRmY2U4MzRkNzQ4NTYxZGVkMGI2YWFjMThlIiwidXNlcl9pZCI6Mn0.A50zM552eHjo-p3BXJ_6qNJYbl4WAQUBrj9t52XS9pw';
+    try {
 
-// Axios POST request with access token in headers
-  axios.post('http://44.221.201.10/api/user_answer/', userAnswer, {
-  headers: {
-    'Authorization': Bearer `${accessToken}`,
-    'Content-Type': 'application/json' // If required by your API
-  }
-})
-  .then((response) => {
+      // Axios POST request with access token in headers
+      const response = axios.post('http://44.221.201.10/api/user_answer/', userAnswer, {
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("key")).accessToken}`,
+          'Content-Type': 'application/json' // If required by your API
+        }
+      });
+      console.log("Response", response.data)
+
+      setSelectedOption(null);
+
+      // Dispatch action to fetch the next question
+      setLoadingSymbol(true)
+      const nextId = id + 1;
+      dispatch(fetchNextQuestion({ categoryId, nextId }));
+      if (selectedOption) {
+        setSaveAndNext((prev) => [...prev, id]);
+      }
+
+    } catch (error) {
+      console.error("Error", error)
+    }
+    setLoadingSymbol(false)
+
+    // Handle the response as needed
     console.log('Response:', response.data);
-    // Handle response data here
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    // Handle errors here
-  });
 
-      // const token =
-      //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExODkwODE2LCJpYXQiOjE3MTE4ODc4MTYsImp0aSI6IjcxMTY3YmQzZGRkZjRlNTJhMmVjZTNiOTU3YTIwZDI4IiwidXNlcl9pZCI6M30.QcVME2a22xVZkvLhSbMSXR7AWZB9WF_-Rmqm9BmQHEkeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExODkwODE2LCJpYXQiOjE3MTE4ODc4MTYsImp0aSI6IjcxMTY3YmQzZGRkZjRlNTJhMmVjZTNiOTU3YTIwZDI4IiwidXNlcl9pZCI6M30.QcVME2a22xVZkvLhSbMSXR7AWZB9WF_-Rmqm9BmQHEk';
-      // const response = await axios
-      //   .post('http://44.221.201.10/api/user_answer/', userAnswer, {
-      //     headers: {
-      //       Authorization: Bearer`${token}`,
-      //       'Content-Type': 'application/json',
-      //     },
-      //   })
-
-      // axios
-      // .post("http://44.221.201.10/api/user_answer/", userAnswer)
-      // .then((nextResponse) => {
-      //   console.log('next==>>', nextResponse.data.results);
-      //   setQuestionsData(nextResponse.data.results);
-      // })
-      // .catch((nextError) => {
-      //   console.error(nextError);
-      // });
-
-        // .then((isSucess) => {
-        //   if (isSucess) {
-        //     const nextId = id + 1;
-        //     dispatch(fetchNextQuestion({ categoryId, nextId }));
-        //   }
-        // });
-
-      // axios
-      //   .get(`http://44.221.201.10/api/question/${categoryId}?page=${id + 1}`)
-      //   .then((nextResponse) => {
-      //     console.log('next==>>', nextResponse.data.results);
-      //     setQuestionsData(nextResponse.data.results);
-      //   })
-      //   .catch((nextError) => {
-      //     console.error(nextError);
-      //   });
-
-      // Handle the response as needed
-      console.log('Response:', response.data);
-    
     // console.log("shubham srivastava")
   };
 
   const handlePrevious = (id) => {
+    setLoadingSymbol(true);
     const previousId = id - 1;
     dispatch(fetchPreviousQuestion({ categoryId, previousId }));
+    setLoadingSymbol(false)
   };
 
   const handleChange = (e, optionId) => {
+    // console.log("optionId ==>>", optionId);
+    // console.log("e ==>>", e);
     // e.preventDefault();
     if (e.target.checked) {
       setSelectedOption(optionId);
@@ -142,8 +121,29 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
   };
 
   const handlePagination = (id) => {
+    // setCurrentQuestionId(id);
+    // setLoadingSymbol(true)
     dispatch(fetchQuestionsByPagination({ categoryId, id }));
+    // setLoadingSymbol(false)
   };
+
+  const handleValue = (id) => {
+    console.log("id", id)
+    dispatch(fetchOptionByQuestion({ id }));
+  }
+
+  const handleRevisit = (id) => {
+
+    const nextId = id + 1;
+    dispatch(fetchNextQuestion({ categoryId, nextId }));
+    if (selectedOption) {
+      setMarkedForRevisit((prev) => [...prev, id]);
+    }
+    setSelectedOption(null)
+  }
+
+  // console.log("markedForRevisit", markedForRevisit)
+  // console.log("saveAndNext", saveAndNext)
 
   const allQuestions = () => {
     axios
@@ -157,12 +157,37 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
       });
   };
 
+  const handleClear = () => {
+    // setSelectedOption(null);
+
+    const inputs = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+    inputs.forEach(input => {
+      input.checked = false;
+    });
+    // console.log("first")
+  }
+
   useEffect(() => {
     allQuestions();
   }, []);
 
   return (
     <div className="flex flex-col h-screen overflow-y-hidden">
+      {loadingSymbol && (
+        <div role="status" className="flex font-light items-center justify-center text-2xl h-screen">
+          <svg
+            aria-hidden="true"
+            className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-400 fill-indigo-600"
+            viewBox="0 0 100 101"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+          </svg>
+          <span className="sr-only">Loading...</span>
+        </div>
+      )}
       <div>
         <header>
           <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
@@ -313,7 +338,7 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                               className="mr-3"
                               // className="mr-3 sm:h-9 w-2/3"
                               alt="Flowbite Logo"
-                              // style={{ height: '160px' }}
+                            // style={{ height: '160px' }}
                             />
                           )}
                         </div>
@@ -326,8 +351,10 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                             {option.answer !== null && (
                               <input
                                 type="checkbox"
-                                id="key1"
+                                id={option.id}
                                 name="fav_language"
+                                value={selectedOption}
+                                onChange={(e) => handleChange(e, option.id)}
                               />
                             )}
                             {option.img !== null ? (
@@ -390,7 +417,7 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                               id={option.id}
                               name="fav_language"
                               value={selectedOption}
-                              defaultChecked={selectedOption === option.id}
+                              // defaultChecked={selectedOption === option.id}
                               onChange={(e) => handleChange(e, option.id)}
                             />
                             {/* {console.log(selectedOption === option.id)} */}
@@ -450,8 +477,10 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                               {option.answer !== null && (
                                 <input
                                   type="radio"
-                                  id="key1"
+                                  id={option.id}
                                   name="fav_language"
+                                  value={selectedOption}
+                                  onChange={(e) => handleChange(e, option.id)}
                                 />
                               )}
                               {/* {option.img === null ? (
@@ -488,10 +517,10 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                      <button className="bg-sky-300 px-3 py-1 rounded">
+                      <button className="bg-sky-300 px-3 py-1 rounded" onClick={() => handleRevisit(question.id)}>
                         Mark for Review & Next
                       </button>
-                      <button className="bg-sky-300 px-3 py-1 rounded">
+                      <button className="bg-sky-300 px-3 py-1 rounded" onClick={handleClear}>
                         Clear Response
                       </button>
                     </div>
@@ -503,17 +532,17 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                         Previous
                       </button>
                       <button
-                        className="bg-cyan-500 text-white px-3 py-1 rounded"
-                        onClick={() => {
-                          // handleNext(question.id);
-                          handleSubmit(question.id, question.answers[index].id);
-                        }}
-                        // onClick={() =>
-                        //   handleSubmit(
-                        //     question?.id,
-                        //     question?.answers[index]?.id,
-                        //   )
-                        // }
+                        className={"bg-cyan-500 text-white px-3 py-1 rounded"}
+                        // onClick={() => {
+                        //   // handleNext(question.id);
+                        //   handleSubmit(question.id, question.answers[index].id);
+                        // }}
+                        onClick={() =>
+                          handleSubmit(
+                            question?.id,
+                            // question.answers[index].id,
+                          )
+                        }
                       >
                         Save & Next
                       </button>
@@ -557,10 +586,26 @@ const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYW
                     {totalQuestions?.map((data, index) => (
                       <div
                         key={data}
-                        className="text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer"
-                        onClick={() => handlePagination(data.id)}
+                        // className={`text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer ${
+                        //   markedForRevisit.includes(data.id) && selectedOption !== null ? 'bg-red-500 text-white' : ''
+                        // } ${
+                        //   selectedOption === null && !markedForRevisit.includes(data.id) ? '' : 'bg-red-500 text-white'
+                        // } ${selectedOption === null && !saveAndNext.includes(data.id) ? '' : 'bg-green-500 text-white'}`}
+                        className={`text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer'
+                          }`}
+
+                        onClick={() => { handlePagination(data.id); handleValue(data.id) }}
                       >
-                        {data.id}
+                        {/* {data.id} */}
+                        {saveAndNext.includes(data.id) ? (
+                          <span className="text-center border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer bg-green-500 text-white">
+                            {data.id}
+                          </span>
+                        ) : markedForRevisit.includes(data.id) ? (
+                          <span className="text-center border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer bg-red-500 text-white">
+                            {data.id}
+                          </span>
+                        ) : (data.id)}
                       </div>
                     ))}
                   </div>
