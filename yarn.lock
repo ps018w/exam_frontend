@@ -225,10 +225,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@esbuild/win32-x64@0.19.12":
+"@esbuild/darwin-arm64@0.19.12":
   version "0.19.12"
-  resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.19.12.tgz"
-  integrity sha512-T1QyPSDCyMXaO3pzBkF96E8xMkiRYbUEZADd29SyPGabqxMViNoii+NcK7eWJAEoU6RZyEm5lVSIjTmcdoB9HA==
+  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.19.12.tgz"
+  integrity sha512-B6IeSgZgtEzGC42jsI+YYu9Z3HKRxp8ZT3cqhvliEHovq8HSX2YX8lNocDn79gCKJXOSaEot9MVYky7AKjCs8g==
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
@@ -261,6 +261,14 @@
   version "8.56.0"
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.56.0.tgz"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
+
+"@headlessui/react@^1.7.18":
+  version "1.7.18"
+  resolved "https://registry.npmjs.org/@headlessui/react/-/react-1.7.18.tgz"
+  integrity sha512-4i5DOrzwN4qSgNsL4Si61VMkUcWbcSKueUV7sFhpHzQcSShdlHENE5+QBntMSRvHt8NyoFO2AGG8si9lq+w4zQ==
+  dependencies:
+    "@tanstack/react-virtual" "^3.0.0-beta.60"
+    client-only "^0.0.1"
 
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"
@@ -350,6 +358,11 @@
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
+
+"@popperjs/core@^2.9.0":
+  version "2.11.8"
+  resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
+  integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
 "@radix-ui/primitive@1.0.1":
   version "1.0.1"
@@ -500,10 +513,34 @@
   resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.15.3.tgz"
   integrity sha512-Oy8rmScVrVxWZVOpEF57ovlnhpZ8CCPlnIIumVcV9nFdiSIrus99+Lw78ekXyGvVDlIsFJbSfmSovJUhCWYV3w==
 
-"@rollup/rollup-win32-x64-msvc@4.12.0":
+"@rollup/rollup-darwin-arm64@4.12.0":
   version "4.12.0"
-  resolved "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.12.0.tgz"
-  integrity sha512-ZYmr5mS2wd4Dew/JjT0Fqi2NPB/ZhZ2VvPp7SmvPZb4Y1CG/LRcS6tcRo2cYU7zLK5A7cdbhWnnWmUjoI4qapg==
+  resolved "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.12.0.tgz"
+  integrity sha512-X64tZd8dRE/QTrBIEs63kaOBG0b5GVEd3ccoLtyf6IdXtHdh8h+I56C2yC3PtC9Ucnv0CpNFJLqKFVgCYe0lOQ==
+
+"@tailwindui/react@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/@tailwindui/react/-/react-0.1.1.tgz"
+  integrity sha512-2VoUokHT/EYHaWQjH49gwKqYtwii7snb1SIp93ewfuI9fSy4x6DYocs4v4WNfyiE971ixc/PT+cs6tCi+zabSA==
+
+"@tanstack/react-virtual@^3.0.0-beta.60":
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/@tanstack/react-virtual/-/react-virtual-3.2.0.tgz"
+  integrity sha512-OEdMByf2hEfDa6XDbGlZN8qO6bTjlNKqjM3im9JG+u3mCL8jALy0T/67oDI001raUUPh1Bdmfn4ZvPOV5knpcg==
+  dependencies:
+    "@tanstack/virtual-core" "3.2.0"
+
+"@tanstack/virtual-core@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/@tanstack/virtual-core/-/virtual-core-3.2.0.tgz"
+  integrity sha512-P5XgYoAw/vfW65byBbJQCw+cagdXDT/qH6wmABiLt4v4YBT2q2vqCOhihe+D1Nt325F/S/0Tkv6C5z0Lv+VBQQ==
+
+"@tippyjs/react@^4.2.6":
+  version "4.2.6"
+  resolved "https://registry.npmjs.org/@tippyjs/react/-/react-4.2.6.tgz"
+  integrity sha512-91RicDR+H7oDSyPycI13q3b7o4O60wa2oRbjlz2fyRLmHImc4vyDwuUP8NtZaN0VARJY5hybvDYrFzhY9+Lbyw==
+  dependencies:
+    tippy.js "^6.3.1"
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
@@ -872,6 +909,11 @@ chokidar@^3.5.3:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+client-only@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/client-only/-/client-only-0.0.1.tgz"
+  integrity sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==
 
 clsx@^2.1.0:
   version "2.1.0"
@@ -1400,6 +1442,11 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
+
+fsevents@~2.3.2, fsevents@~2.3.3:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -2253,7 +2300,7 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-"react-dom@^16.8 || ^17.0 || ^18.0", react-dom@^18.2.0, react-dom@>=16.8, react-dom@>=18:
+"react-dom@^16 || ^17 || ^18", "react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0", react-dom@^18.2.0, react-dom@>=16.8, react-dom@>=18:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -2308,7 +2355,7 @@ react-toastify@^10.0.5:
   dependencies:
     clsx "^2.1.0"
 
-"react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.2.0, react@>=16.8, react@>=16.8.6, react@>=18:
+"react@^16 || ^17 || ^18", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.2.0, react@>=16, react@>=16.8, react@>=16.8.6, react@>=18:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -2703,6 +2750,13 @@ thenify-all@^1.0.0:
   integrity sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==
   dependencies:
     any-promise "^1.0.0"
+
+tippy.js@^6.3.1:
+  version "6.3.7"
+  resolved "https://registry.npmjs.org/tippy.js/-/tippy.js-6.3.7.tgz"
+  integrity sha512-E1d3oP2emgJ9dRQZdf3Kkn0qJgI6ZLpyS5z6ZkY1DF3kaQaBsGZsndEpHwx+eC+tYM41HaSNvNtLx8tU57FzTQ==
+  dependencies:
+    "@popperjs/core" "^2.9.0"
 
 to-fast-properties@^2.0.0:
   version "2.0.0"

@@ -4,7 +4,10 @@ import axios from 'axios';
 import logo from '../../assets/Images/logo.jpeg';
 import Pagination from './Pagination';
 import { current } from '@reduxjs/toolkit';
-import { fetchFirstQuestions, fetchOptionByQuestion } from '../../Feature/questionsSlice';
+import {
+  fetchFirstQuestions,
+  fetchOptionByQuestion,
+} from '../../Feature/questionsSlice';
 import { fetchNextQuestion } from '../../Feature/questionsSlice';
 import { fetchPreviousQuestion } from '../../Feature/questionsSlice';
 import { fetchQuestionsByPagination } from '../../Feature/questionsSlice';
@@ -17,7 +20,6 @@ const Template = ({ categoryId }) => {
   const [markedForRevisit, setMarkedForRevisit] = useState([]);
   const [saveAndNext, setSaveAndNext] = useState([]);
   // const [currentQuestionId, setCurrentQuestionId] = useState(null);
-
 
   const initialQuestions = totalQuestions.map((question) => ({
     ...question,
@@ -70,30 +72,34 @@ const Template = ({ categoryId }) => {
     console.log('userAnswer==>>', userAnswer);
 
     try {
-
       // Axios POST request with access token in headers
-      const response = axios.post('http://44.221.201.10/api/user_answer/', userAnswer, {
-        headers: {
-          'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("key")).accessToken}`,
-          'Content-Type': 'application/json' // If required by your API
-        }
-      });
-      console.log("Response", response.data)
+      const response = axios.post(
+        'http://44.221.201.10/api/user_answer/',
+        userAnswer,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem('key')).accessToken
+            }`,
+            'Content-Type': 'application/json', // If required by your API
+          },
+        },
+      );
+      console.log('Response', response.data);
 
       setSelectedOption(null);
 
       // Dispatch action to fetch the next question
-      setLoadingSymbol(true)
+      setLoadingSymbol(true);
       const nextId = id + 1;
       dispatch(fetchNextQuestion({ categoryId, nextId }));
       if (selectedOption) {
         setSaveAndNext((prev) => [...prev, id]);
       }
-
     } catch (error) {
-      console.error("Error", error)
+      console.error('Error', error);
     }
-    setLoadingSymbol(false)
+    setLoadingSymbol(false);
 
     // Handle the response as needed
     console.log('Response:', response.data);
@@ -105,7 +111,7 @@ const Template = ({ categoryId }) => {
     setLoadingSymbol(true);
     const previousId = id - 1;
     dispatch(fetchPreviousQuestion({ categoryId, previousId }));
-    setLoadingSymbol(false)
+    setLoadingSymbol(false);
   };
 
   const handleChange = (e, optionId) => {
@@ -128,19 +134,18 @@ const Template = ({ categoryId }) => {
   };
 
   const handleValue = (id) => {
-    console.log("id", id)
+    console.log('id', id);
     dispatch(fetchOptionByQuestion({ id }));
-  }
+  };
 
   const handleRevisit = (id) => {
-
     const nextId = id + 1;
     dispatch(fetchNextQuestion({ categoryId, nextId }));
     if (selectedOption) {
       setMarkedForRevisit((prev) => [...prev, id]);
     }
-    setSelectedOption(null)
-  }
+    setSelectedOption(null);
+  };
 
   // console.log("markedForRevisit", markedForRevisit)
   // console.log("saveAndNext", saveAndNext)
@@ -160,12 +165,14 @@ const Template = ({ categoryId }) => {
   const handleClear = () => {
     // setSelectedOption(null);
 
-    const inputs = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-    inputs.forEach(input => {
+    const inputs = document.querySelectorAll(
+      'input[type="checkbox"], input[type="radio"]',
+    );
+    inputs.forEach((input) => {
       input.checked = false;
     });
     // console.log("first")
-  }
+  };
 
   useEffect(() => {
     allQuestions();
@@ -174,7 +181,10 @@ const Template = ({ categoryId }) => {
   return (
     <div className="flex flex-col h-screen overflow-y-hidden">
       {loadingSymbol && (
-        <div role="status" className="flex font-light items-center justify-center text-2xl h-screen">
+        <div
+          role="status"
+          className="flex font-light items-center justify-center text-2xl h-screen"
+        >
           <svg
             aria-hidden="true"
             className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-400 fill-indigo-600"
@@ -182,8 +192,14 @@ const Template = ({ categoryId }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+            <path
+              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+              fill="currentColor"
+            />
+            <path
+              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+              fill="currentFill"
+            />
           </svg>
           <span className="sr-only">Loading...</span>
         </div>
@@ -223,16 +239,11 @@ const Template = ({ categoryId }) => {
                   </div> */}
                   {/* <Timer /> */}
                 </div>
-                <div className="flex gap-4">
+                {/* <div className="flex gap-4">
                   <button className="border border-cyan-500 px-4 py-2 text-cyan-500 rounded hover:bg-cyan-500 hover:text-white">
                     Switch Full Screen
                   </button>
-                  {/* <button className="border border-cyan-500 px-4 py-2 text-cyan-500 hover:bg-cyan-500 hover:text-white rounded">
-                    Pause
-                  </button> */}
-                  {/* <label for="myfile">Select a file:</label>
-                  <input type="file" id="myfile" name="myfile"></input> */}
-                </div>
+                </div> */}
               </div>
             </div>
           </nav>
@@ -242,27 +253,16 @@ const Template = ({ categoryId }) => {
             <div key={question.id} id="rightSection" className="col-span-9">
               <div
                 id="rightSectionHeading"
-                className="border-l-0 border-r-0 border-2 bg-gray-50 px-5 h-[60px] leading-[3.5]"
+                className="border-l-0 border-r-0 border bg-indigo-50 px-5  leading-[3.5] border-gray-300"
               >
-                <div className="flex gap-4 items-center">
-                  {/* <div>Category</div> */}
-                  <div className="flex gap-3 text-gray-500">
-                    {/* <div className="bg-gray-900	 text-white px-2 py-1 rounded-2 font-light text-base rounded">
-                    English Language
-                  </div> */}
-                    {/* <div className="px-2 py-1 rounded-2 font-light text-base rounded">
-                    Quantitative Aptitude
-                  </div> */}
-                    <div className="bg-gray-900 text-white px-2 py-1 rounded-2 font-light text-base rounded">
-                      {question.category}
-                    </div>
-                  </div>
-                </div>
+                <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r to-indigo-800 from-cyan-400">
+                  {question.category}
+                </span>
               </div>
               <div className="flex flex-col h-screen">
                 <div
                   id="sectionTitle"
-                  className="bg-gray-50 flex items-center justify-between px-4 py-2 border-b"
+                  className="bg-indigo-50 flex items-center justify-between px-4 py-2 border-b border-gray-300"
                 >
                   <div className="font-semibold">
                     Question No. {question.id}
@@ -305,7 +305,7 @@ const Template = ({ categoryId }) => {
                 </div>
                 <div id="sectionBody" className="flex overflow-auto flex-1">
                   <div
-                    className="flex-1 overflow-auto p-4 border-r"
+                    className="flex-1 overflow-auto p-4"
                     style={{
                       height: 'calc(100vh - 254px)',
                     }}
@@ -338,7 +338,7 @@ const Template = ({ categoryId }) => {
                               className="mr-3"
                               // className="mr-3 sm:h-9 w-2/3"
                               alt="Flowbite Logo"
-                            // style={{ height: '160px' }}
+                              // style={{ height: '160px' }}
                             />
                           )}
                         </div>
@@ -513,26 +513,36 @@ const Template = ({ categoryId }) => {
                 </div>
                 <div
                   id="sectionFooter"
-                  className="sticky bg-gray-50  shadow-sm border-t p-4 bottom-0"
+                  className="sticky bg-indigo-50  shadow-sm border-t p-4 bottom-0 border-gray-300"
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                      <button className="bg-sky-300 px-3 py-1 rounded" onClick={() => handleRevisit(question.id)}>
+                      <button
+                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                        // className="bg-sky-300 px-3 py-1 rounded"
+                        onClick={() => handleRevisit(question.id)}
+                      >
                         Mark for Review & Next
                       </button>
-                      <button className="bg-sky-300 px-3 py-1 rounded" onClick={handleClear}>
+                      <button
+                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                        // className="bg-sky-300 px-3 py-1 rounded"
+                        onClick={handleClear}
+                      >
                         Clear Response
                       </button>
                     </div>
                     <div className="flex items-center gap-4">
                       <button
-                        className="bg-cyan-500 text-white px-3 py-1 rounded"
+                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                        // className="bg-cyan-500 text-white px-3 py-1 rounded"
                         onClick={() => handlePrevious(question.id)}
                       >
                         Previous
                       </button>
                       <button
-                        className={"bg-cyan-500 text-white px-3 py-1 rounded"}
+                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                        // className={'bg-cyan-500 text-white px-3 py-1 rounded'}
                         // onClick={() => {
                         //   // handleNext(question.id);
                         //   handleSubmit(question.id, question.answers[index].id);
@@ -552,32 +562,41 @@ const Template = ({ categoryId }) => {
               </div>
             </div>
           ))}
-          <div id="leftSection" className="col-span-3 bg-cyan-50">
-            <div className="flex flex-col min-h-screen">
+          <div id="leftSection" className="col-span-3 bg-indigo-50">
+            <div className="flex flex-col min-h-screen border border-gray-300">
               <div className="flex-1">
                 <div className="border-b grid grid-cols-12 items-center gap-y-4 gap-x-2 px-3 py-4 text-[13px]">
                   <div className="flex gap-2 items-center col-span-6">
-                    <div className="bg-green-500 h-[22px] leading-[2] rounded-tl-full rounded-tr-full text-center text-white text-xs w-[35px]">
+                    <div
+                      className="flex h-6 items-center  p-4 rounded text-white text-xs bg-green-500 font-bold"
+                      // className="bg-green-500 h-[22px] leading-[2] rounded-tl-full rounded-tr-full text-center text-white text-xs w-[35px]"
+                    >
                       1
                     </div>
 
                     <span className="text-nowrap">Answered</span>
                   </div>
-                  <div className="flex gap-2 col-span-6">
-                    <span className="border border-gray-600 p-1 text-xs bg-white">
+                  <div className="flex gap-2 col-span-6 items-center">
+                    <span
+                      className="bg-white border border-gray-300 flex font-bold h-6 items-center p-4 px-3 rounded text-xs"
+                      // className="border border-gray-600 p-1 text-xs bg-white"
+                    >
                       29
                     </span>
                     <span className="text-nowrap">Not Visited</span>
                   </div>
                   <div className="flex gap-2 items-center col-span-6">
-                    <span className="bg-red-500 flex  items-center px-2 rounded-full text-white text-xs h-6">
+                    <span
+                      className="bg-red-500 flex h-6 items-center  p-4 rounded text-white text-xs font-bold"
+                      // className="bg-red-500 flex  items-center px-2 rounded-full text-white text-xs h-6"
+                    >
                       0
                     </span>
                     <span className="text-nowrap">Answered for revisit</span>
                   </div>
                   <div className="flex gap-2 items-center col-span-6"></div>
                 </div>
-                <div className="bg-sky-300 flex gap-2 px-4 py-2 mb-4">
+                <div className="bg-indigo-600 text-white flex gap-2 px-4 py-2 mb-4">
                   <span className="font-semibold">SECTION :</span>
                   <span>{totalQuestions[0]?.category}</span>
                 </div>
@@ -593,8 +612,10 @@ const Template = ({ categoryId }) => {
                         // } ${selectedOption === null && !saveAndNext.includes(data.id) ? '' : 'bg-green-500 text-white'}`}
                         className={`text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer'
                           }`}
-
-                        onClick={() => { handlePagination(data.id); handleValue(data.id) }}
+                        onClick={() => {
+                          handlePagination(data.id);
+                          handleValue(data.id);
+                        }}
                       >
                         {/* {data.id} */}
                         {saveAndNext.includes(data.id) ? (
@@ -605,15 +626,20 @@ const Template = ({ categoryId }) => {
                           <span className="text-center border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer bg-red-500 text-white">
                             {data.id}
                           </span>
-                        ) : (data.id)}
+                        ) : (
+                          data.id
+                        )}
                       </div>
                     ))}
                   </div>
                   <div></div>
                 </div>
               </div>
-              <div className="border sticky bottom-0 p-4">
-                <button className="bg-cyan-500 text-white px-3 py-1 rounded w-full">
+              <div className="border-gray-300 border-t bottom-0 p-4 sticky">
+                <button
+                  className="inline-flex items-center justify-center w-full py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                  // className="bg-cyan-500 text-white px-3 py-1 rounded w-full"
+                >
                   Final Submit
                 </button>
               </div>

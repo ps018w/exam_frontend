@@ -39,7 +39,7 @@ const LoginView = () => {
       if (isSusses) {
         if (isSusses?.error === undefined) {
           setSuccessMessage('Login successful');
-          navigateTo('/home');
+          navigateTo('/Category');
         } else {
           setSuccessMessage('Invalid Credentials');
         }
