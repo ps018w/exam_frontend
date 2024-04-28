@@ -19,6 +19,8 @@ const Template = ({ categoryId }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [markedForRevisit, setMarkedForRevisit] = useState([]);
   const [saveAndNext, setSaveAndNext] = useState([]);
+  const [imageUrl, setImageUrl] = useState(null);
+
   // const [currentQuestionId, setCurrentQuestionId] = useState(null);
 
   const initialQuestions = totalQuestions.map((question) => ({
@@ -69,7 +71,6 @@ const Template = ({ categoryId }) => {
       user_answer: [selectedOption],
       // time_taken: 'your_time_value',
     };
-    console.log('userAnswer==>>', userAnswer);
 
     try {
       // Axios POST request with access token in headers
@@ -85,7 +86,6 @@ const Template = ({ categoryId }) => {
           },
         },
       );
-      console.log('Response', response.data);
 
       setSelectedOption(null);
 
@@ -102,7 +102,6 @@ const Template = ({ categoryId }) => {
     setLoadingSymbol(false);
 
     // Handle the response as needed
-    console.log('Response:', response.data);
 
     // console.log("shubham srivastava")
   };
@@ -134,7 +133,6 @@ const Template = ({ categoryId }) => {
   };
 
   const handleValue = (id) => {
-    console.log('id', id);
     dispatch(fetchOptionByQuestion({ id }));
   };
 
@@ -154,7 +152,6 @@ const Template = ({ categoryId }) => {
     axios
       .get('http://44.221.201.10/api/questions')
       .then((res) => {
-        console.log('total questions==>>', res.data.data);
         setTotalQuestions(res.data.data);
       })
       .catch((error) => {
@@ -171,23 +168,38 @@ const Template = ({ categoryId }) => {
     inputs.forEach((input) => {
       input.checked = false;
     });
-    // console.log("first")
   };
 
   useEffect(() => {
     allQuestions();
   }, []);
-
+  const onChangeFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Get the data URL representing the file content
+        const imageUrl = reader.result;
+        // Update state with the image URL
+        setImageUrl(imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const removeImg = () => {
+    setImageUrl(null);
+  };
+  console.log('ffefefefe', imageUrl);
   return (
     <div className="flex flex-col h-screen overflow-y-hidden">
-      {loadingSymbol && (
+      {loading ? (
         <div
           role="status"
           className="flex font-light items-center justify-center text-2xl h-screen"
         >
           <svg
             aria-hidden="true"
-            className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-400 fill-indigo-600"
+            className="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-400 fill-indigo-600"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -203,29 +215,29 @@ const Template = ({ categoryId }) => {
           </svg>
           <span className="sr-only">Loading...</span>
         </div>
-      )}
-      <div>
-        <header>
-          <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
-            <div className="flex flex-wrap justify-between items-center">
-              <div id="logoSection" className="flex items-center gap-4">
-                <a href="#" className="flex items-center">
-                  <img
-                    src={logo}
-                    className="mr-3 h-6 sm:h-9"
-                    alt="Flowbite Logo"
-                  />
-                </a>
-                {/* <div className="text-darkslategray">
+      ) : (
+        <div>
+          <header>
+            <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
+              <div className="flex flex-wrap justify-between items-center">
+                <div id="logoSection" className="flex items-center gap-4">
+                  <a href="#" className="flex items-center">
+                    <img
+                      src={logo}
+                      className="mr-3 h-6 sm:h-9"
+                      alt="Flowbite Logo"
+                    />
+                  </a>
+                  {/* <div className="text-darkslategray">
                   IBPS PO Prelims Full Test 1
                 </div> */}
-              </div>
-              <div
-                id="timerSection"
-                className="flex items-center gap-5 w-1/2 justify-between"
-              >
-                <div id="timer" className="font-semibold">
-                  {/* <div className="flex gap-4">
+                </div>
+                <div
+                  id="timerSection"
+                  className="flex items-center gap-5 w-1/2 justify-between"
+                >
+                  <div id="timer" className="font-semibold">
+                    {/* <div className="flex gap-4">
                     <span>Section Time</span>
                     <div className="flex gap-2 items-center">
                       <span className="bg-black text-white px-[5px] text-sm">
@@ -237,37 +249,37 @@ const Template = ({ categoryId }) => {
                       </span>
                     </div>
                   </div> */}
-                  {/* <Timer /> */}
-                </div>
-                {/* <div className="flex gap-4">
+                    {/* <Timer /> */}
+                  </div>
+                  {/* <div className="flex gap-4">
                   <button className="border border-cyan-500 px-4 py-2 text-cyan-500 rounded hover:bg-cyan-500 hover:text-white">
                     Switch Full Screen
                   </button>
                 </div> */}
+                </div>
               </div>
-            </div>
-          </nav>
-        </header>
-        <div className="grid grid-cols-12 flex-1">
-          {allQuestion.map((question, index) => (
-            <div key={question.id} id="rightSection" className="col-span-9">
-              <div
-                id="rightSectionHeading"
-                className="border-l-0 border-r-0 border bg-indigo-50 px-5  leading-[3.5] border-gray-300"
-              >
-                <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r to-indigo-800 from-cyan-400">
-                  {question.category}
-                </span>
-              </div>
-              <div className="flex flex-col h-screen">
+            </nav>
+          </header>
+          <div className="lg:grid grid-cols-12 flex-1">
+            {allQuestion.map((question, index) => (
+              <div key={question.id} id="rightSection" className="col-span-9">
                 <div
-                  id="sectionTitle"
-                  className="bg-indigo-50 flex items-center justify-between px-4 py-2 border-b border-gray-300"
+                  id="rightSectionHeading"
+                  className="border-l-0 border-r-0 border bg-indigo-50 px-5  leading-[3.5] border-gray-300"
                 >
-                  <div className="font-semibold">
-                    Question No. {question.id}
-                  </div>
-                  {/* <div className="flex font-light gap-4 items-center text-base">
+                  <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r to-indigo-800 from-cyan-400">
+                    {question.category}
+                  </span>
+                </div>
+                <div className="flex flex-col h-screen">
+                  <div
+                    id="sectionTitle"
+                    className="bg-indigo-50 flex items-center justify-between px-4 py-2 border-b border-gray-300"
+                  >
+                    <div className="font-semibold">
+                      Question No. {question.id}
+                    </div>
+                    {/* <div className="flex font-light gap-4 items-center text-base">
                   <div className="flex flex-col">
                     <span>Marks</span>
                     <div className="flex items-center gap-3">
@@ -302,352 +314,324 @@ const Template = ({ categoryId }) => {
                     <span>Report</span>
                   </div>
                 </div> */}
-                </div>
-                <div id="sectionBody" className="flex overflow-auto flex-1">
-                  <div
-                    className="flex-1 overflow-auto p-4"
-                    style={{
-                      height: 'calc(100vh - 254px)',
-                    }}
-                  >
-                    <div className="mb-3">
-                      {/* <span>Comprehension:</span> */}
-                      {/* <span>(Que No. 1 - 8)</span> */}
-                    </div>
-                    <div className="mb-3">
-                      <strong>{question.question}</strong>
-                    </div>
-                    {/* {question.question_type === 'MCQ' &&
-                      question.answers.map((option, index) => (
-                        <div className="flex flex-col gap-4">
-                          <div className="flex items-baseline">
-                            <input type="checkbox" id="key1" name="fav_language" />
-                            <label htmlFor="key1" className="pl-2">
-                              {option.answer}
-                            </label>
-                          </div>
-                        </div>
-                      ))} */}
-
-                    {question.question_type === 'MCQ' && (
-                      <div className="flex flex-col gap-4">
-                        <div className="flex items-baseline">
-                          {question.img !== null && (
-                            <img
-                              src={question.img}
-                              className="mr-3"
-                              // className="mr-3 sm:h-9 w-2/3"
-                              alt="Flowbite Logo"
-                              // style={{ height: '160px' }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {question.question_type === 'MCQ' &&
-                      question.answers.map((option, index) => (
-                        <div className="flex flex-col gap-4">
-                          <div className="flex items-baseline">
-                            {option.answer !== null && (
-                              <input
-                                type="checkbox"
-                                id={option.id}
-                                name="fav_language"
-                                value={selectedOption}
-                                onChange={(e) => handleChange(e, option.id)}
-                              />
-                            )}
-                            {option.img !== null ? (
-                              <label htmlFor="key1" className="pl-2">
-                                <div>
-                                  <img src={option.img} />
-                                </div>
-                              </label>
-                            ) : (
-                              <>
-                                {option.answer !== null && (
-                                  <label htmlFor="key1" className="pl-2">
-                                    <div>{option.answer}</div>
-                                  </label>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    {question.question_type === 'PW' && (
-                      <div className="flex flex-col gap-4">
-                        <div className="flex items-baseline">
-                          <textarea
-                            className="resize-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="questionTextarea"
-                            rows="4"
-                            placeholder="Type your question here..."
-                          ></textarea>
-                        </div>
-                        <label for="avatar">Choose a image:</label>
-
-                        <input
-                          type="file"
-                          id="avatar"
-                          name="avatar"
-                          accept="image/png, image/jpeg"
-                        />
-                      </div>
-                    )}
-                    {question.question_type === 'SQ' && (
-                      <div className="flex flex-col gap-4">
-                        <div className="flex items-baseline">
-                          {question.img !== null && (
-                            <img
-                              src={question.img}
-                              className="mr-3"
-                              alt="Flowbite Logo"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {question.question_type === 'SQ' &&
-                      question.answers.map((option, index) => (
-                        <div className="flex flex-col gap-4">
-                          <div className="flex items-baseline" key={index}>
-                            <input
-                              type="radio"
-                              id={option.id}
-                              name="fav_language"
-                              value={selectedOption}
-                              // defaultChecked={selectedOption === option.id}
-                              onChange={(e) => handleChange(e, option.id)}
-                            />
-                            {/* {console.log(selectedOption === option.id)} */}
-                            {/* {option.img === null ? (
-                              <label htmlFor="key1" className="pl-2">
-                                <div>
-                                  <img src={imageFunction(index)} />
-                                </div>
-                              </label>
-                            ) : ( */}
-                            {option.img !== null ? (
-                              <label htmlFor="key1" className="pl-4">
-                                <div>
-                                  <img src={option.img} />
-                                </div>
-                              </label>
-                            ) : (
-                              <>
-                                {option.answer !== null && (
-                                  <label htmlFor="key1" className="pl-2">
-                                    <div>{option.answer}</div>
-                                  </label>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      ))}
                   </div>
-                  {question.question_type === 'PC' && (
-                    <div className="flex-1 p-4">
-                      <div className="mb-3">Question:</div>
+                  <div id="sectionBody" className="flex overflow-auto flex-1">
+                    <div
+                      className="flex-1 overflow-auto p-4"
+                      style={{
+                        height: 'calc(100vh - 254px)',
+                      }}
+                    >
                       <div className="mb-3">
-                        <strong className="mb-2">
-                          {question.sub_question}
-                        </strong>
+                        <strong>{question.question}</strong>
                       </div>
-                      {/* <h3>Turn the tables</h3> */}
-                      {question.answers.map((option, subIndex) => (
-                        <div className="flex flex-col gap-4" key={subIndex}>
-                          <div className="flex items-baseline">
-                            {question.img !== null && (
-                              <img
-                                src={question.img}
-                                className="mr-3 sm:h-9 w-2/3"
-                                alt="Flowbite Logo"
-                                style={{ height: '160px' }}
-                              />
-                            )}
-                          </div>
+                      {question.question_type === 'MCQ' && (
+                        <div className="mb-6">
+                          {question.img !== null && (
+                            <img
+                              src={question.img}
+                              className="w-auto max-w-[24rem] h-auto max-h-[14rem] object-contain"
+                              alt="Flowbite Logo"
+                            />
+                          )}
                         </div>
-                      ))}
-                      {question.question_type === 'PC' &&
-                        question.answers.map((option, index) => (
-                          <div className="flex flex-col gap-4">
-                            <div className="flex items-baseline">
+                      )}
+                      <div className="flex flex-col gap-4">
+                        {question.question_type === 'MCQ' &&
+                          question.answers.map((option, index) => (
+                            <div className="flex items-center gap-2">
                               {option.answer !== null && (
                                 <input
-                                  type="radio"
+                                  className="obds-checkbox"
+                                  type="checkbox"
                                   id={option.id}
                                   name="fav_language"
                                   value={selectedOption}
                                   onChange={(e) => handleChange(e, option.id)}
                                 />
                               )}
-                              {/* {option.img === null ? (
-                              <label htmlFor="key1" className="pl-2">
-                                <div>
-                                  <img src={imageFunction(index)} />
-                                </div>
-                              </label>
-                            ) : ( */}
                               {option.img !== null ? (
-                                <label htmlFor="key1" className="pl-2">
+                                <label htmlFor="key1">
                                   <div>
-                                    <img src={option.img} />
+                                    <img
+                                      src={option.img}
+                                      className="w-auto max-w-[24rem] h-auto max-h-[14rem] object-contain"
+                                    />
                                   </div>
                                 </label>
                               ) : (
                                 <>
                                   {option.answer !== null && (
-                                    <label htmlFor="key1" className="pl-2">
+                                    <label htmlFor="key1">
                                       <div>{option.answer}</div>
                                     </label>
                                   )}
                                 </>
                               )}
                             </div>
+                          ))}
+                      </div>
+                      {question.question_type === 'PW' && (
+                        <>
+                          <div className="flex flex-col gap-4">
+                            <div className="flex items-baseline">
+                              <textarea
+                                className="resize-none border rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="questionTextarea"
+                                rows="4"
+                                placeholder="Type your question here..."
+                              ></textarea>
+                            </div>
+                            <div className="flex items-center space-x-6">
+                              {imageUrl && (
+                                <div className="border border-gray-300 p-2 rounded-lg shadow-sm shrink-0 relative">
+                                  <img
+                                    id="preview_img"
+                                    className="h-16 w-16 object-cover rounded"
+                                    src={imageUrl}
+                                    alt="Current profile photo"
+                                  />
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="red"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    className="feather feather-x-circle absolute  cursor-pointer bg-white -top-[6px] -right-[7px]"
+                                    onClick={() => removeImg()}
+                                  >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m15 9-6 6M9 9l6 6" />
+                                  </svg>
+                                </div>
+                              )}
+                              <label className="block">
+                                <span className="sr-only">
+                                  Choose profile photo
+                                </span>
+                                <input
+                                  type="file"
+                                  onChange={(e) => onChangeFile(e)}
+                                  className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {question.question_type === 'SQ' && (
+                        <div className="mb-6">
+                          {question.img !== null && (
+                            <img
+                              src={question.img}
+                              className="w-auto max-w-[24rem] h-auto max-h-[14rem] object-contain"
+                              alt="Flowbite Logo"
+                            />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-4">
+                        {question.question_type === 'SQ' &&
+                          question.answers.map((option, index) => (
+                            <div
+                              className="flex items-center gap-2"
+                              key={index}
+                            >
+                              <input
+                                className="obds-radio"
+                                type="radio"
+                                id={option.id}
+                                name="fav_language"
+                                value={selectedOption}
+                                onChange={(e) => handleChange(e, option.id)}
+                              />
+                              {option.img !== null ? (
+                                <label htmlFor="key1">
+                                  <div>
+                                    <img
+                                      src={option.img}
+                                      className="w-auto max-w-[24rem] h-auto max-h-[3rem] object-contain"
+                                    />
+                                  </div>
+                                </label>
+                              ) : (
+                                <>
+                                  {option.answer !== null && (
+                                    <label htmlFor="key1">
+                                      <div>{option.answer}</div>
+                                    </label>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                    {question.question_type === 'PC' && (
+                      <div className="flex-1 p-4">
+                        <div className="mb-3">Question:</div>
+                        <div className="mb-3">
+                          <strong className="mb-2">
+                            {question.sub_question}
+                          </strong>
+                        </div>
+                        {question.answers.map((option, subIndex) => (
+                          <div className="mb-6" key={subIndex}>
+                            {question.img !== null && (
+                              <img
+                                src={question.img}
+                                className="w-auto max-w-[24rem] h-auto max-h-[14rem] object-contain"
+                                alt="Flowbite Logo"
+                              />
+                            )}
                           </div>
                         ))}
-                    </div>
-                  )}
-                </div>
-                <div
-                  id="sectionFooter"
-                  className="sticky bg-indigo-50  shadow-sm border-t p-4 bottom-0 border-gray-300"
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                      <button
-                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
-                        // className="bg-sky-300 px-3 py-1 rounded"
-                        onClick={() => handleRevisit(question.id)}
-                      >
-                        Mark for Review & Next
-                      </button>
-                      <button
-                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
-                        // className="bg-sky-300 px-3 py-1 rounded"
-                        onClick={handleClear}
-                      >
-                        Clear Response
-                      </button>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <button
-                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
-                        // className="bg-cyan-500 text-white px-3 py-1 rounded"
-                        onClick={() => handlePrevious(question.id)}
-                      >
-                        Previous
-                      </button>
-                      <button
-                        className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
-                        // className={'bg-cyan-500 text-white px-3 py-1 rounded'}
-                        // onClick={() => {
-                        //   // handleNext(question.id);
-                        //   handleSubmit(question.id, question.answers[index].id);
-                        // }}
-                        onClick={() =>
-                          handleSubmit(
-                            question?.id,
-                            // question.answers[index].id,
-                          )
-                        }
-                      >
-                        Save & Next
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-          <div id="leftSection" className="col-span-3 bg-indigo-50">
-            <div className="flex flex-col min-h-screen border border-gray-300">
-              <div className="flex-1">
-                <div className="border-b grid grid-cols-12 items-center gap-y-4 gap-x-2 px-3 py-4 text-[13px]">
-                  <div className="flex gap-2 items-center col-span-6">
-                    <div
-                      className="flex h-6 items-center  p-4 rounded text-white text-xs bg-green-500 font-bold"
-                      // className="bg-green-500 h-[22px] leading-[2] rounded-tl-full rounded-tr-full text-center text-white text-xs w-[35px]"
-                    >
-                      1
-                    </div>
-
-                    <span className="text-nowrap">Answered</span>
-                  </div>
-                  <div className="flex gap-2 col-span-6 items-center">
-                    <span
-                      className="bg-white border border-gray-300 flex font-bold h-6 items-center p-4 px-3 rounded text-xs"
-                      // className="border border-gray-600 p-1 text-xs bg-white"
-                    >
-                      29
-                    </span>
-                    <span className="text-nowrap">Not Visited</span>
-                  </div>
-                  <div className="flex gap-2 items-center col-span-6">
-                    <span
-                      className="bg-red-500 flex h-6 items-center  p-4 rounded text-white text-xs font-bold"
-                      // className="bg-red-500 flex  items-center px-2 rounded-full text-white text-xs h-6"
-                    >
-                      0
-                    </span>
-                    <span className="text-nowrap">Answered for revisit</span>
-                  </div>
-                  <div className="flex gap-2 items-center col-span-6"></div>
-                </div>
-                <div className="bg-indigo-600 text-white flex gap-2 px-4 py-2 mb-4">
-                  <span className="font-semibold">SECTION :</span>
-                  <span>{totalQuestions[0]?.category}</span>
-                </div>
-                <div className="px-4 flex flex-col gap-4">
-                  <div className="gap-4 grid grid-cols-12">
-                    {totalQuestions?.map((data, index) => (
-                      <div
-                        key={data}
-                        // className={`text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer ${
-                        //   markedForRevisit.includes(data.id) && selectedOption !== null ? 'bg-red-500 text-white' : ''
-                        // } ${
-                        //   selectedOption === null && !markedForRevisit.includes(data.id) ? '' : 'bg-red-500 text-white'
-                        // } ${selectedOption === null && !saveAndNext.includes(data.id) ? '' : 'bg-green-500 text-white'}`}
-                        className={`text-center bg-white border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer'
-                          }`}
-                        onClick={() => {
-                          handlePagination(data.id);
-                          handleValue(data.id);
-                        }}
-                      >
-                        {/* {data.id} */}
-                        {saveAndNext.includes(data.id) ? (
-                          <span className="text-center border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer bg-green-500 text-white">
-                            {data.id}
-                          </span>
-                        ) : markedForRevisit.includes(data.id) ? (
-                          <span className="text-center border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer bg-red-500 text-white">
-                            {data.id}
-                          </span>
-                        ) : (
-                          data.id
-                        )}
+                        <div className="flex flex-col gap-4">
+                          {question.question_type === 'PC' &&
+                            question.answers.map((option, index) => (
+                              <div className="flex items-center gap-2">
+                                {option.answer !== null && (
+                                  <input
+                                    type="radio"
+                                    id={option.id}
+                                    name="fav_language"
+                                    value={selectedOption}
+                                    onChange={(e) => handleChange(e, option.id)}
+                                    className="obds-radio"
+                                  />
+                                )}
+                                {option.img !== null ? (
+                                  <label htmlFor="key1">
+                                    <div>
+                                      <img
+                                        src={option.img}
+                                        className="w-auto max-w-[24rem] h-auto max-h-[14rem] object-contain"
+                                      />
+                                    </div>
+                                  </label>
+                                ) : (
+                                  <>
+                                    {option.answer !== null && (
+                                      <label htmlFor="key1">
+                                        <div>{option.answer}</div>
+                                      </label>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            ))}
+                        </div>
                       </div>
-                    ))}
+                    )}
                   </div>
-                  <div></div>
+                  <div
+                    id="sectionFooter"
+                    className="sticky bg-indigo-50  shadow-sm border-t p-4 bottom-0 border-gray-300"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        <button
+                          className="hidden lg:block py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                          onClick={() => handleRevisit(question.id)}
+                        >
+                          Mark for Review & Next
+                        </button>
+                        <button
+                          className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                          onClick={handleClear}
+                        >
+                          Clear Response
+                        </button>
+                        <button className="block lg:hidden py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
+                          Final Submit
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <button
+                          className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                          onClick={() => handlePrevious(question.id)}
+                        >
+                          Previous
+                        </button>
+                        <button
+                          className="py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                          onClick={() => handleSubmit(question?.id)}
+                        >
+                          Save & Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="border-gray-300 border-t bottom-0 p-4 sticky">
-                <button
-                  className="inline-flex items-center justify-center w-full py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
-                  // className="bg-cyan-500 text-white px-3 py-1 rounded w-full"
-                >
-                  Final Submit
-                </button>
+            ))}
+            <div id="leftSection" className="col-span-3 bg-indigo-50">
+              <div className="flex flex-col min-h-screen border border-gray-300">
+                <div className="flex-1">
+                  <div className="border-b grid grid-cols-12 items-center gap-y-4 gap-x-2 px-3 py-4 text-[13px]">
+                    <div className="flex gap-2 items-center col-span-6">
+                      <div className="flex h-6 items-center  p-4 rounded text-white text-xs bg-green-500 font-bold">
+                        1
+                      </div>
+
+                      <span className="text-nowrap">Answered</span>
+                    </div>
+                    <div className="flex gap-2 col-span-6 items-center">
+                      <span className="bg-white border border-gray-300 flex font-bold h-6 items-center p-4 px-3 rounded text-xs">
+                        29
+                      </span>
+                      <span className="text-nowrap">Not Visited</span>
+                    </div>
+                    <div className="flex gap-2 items-center col-span-6">
+                      <span className="bg-violet-700 flex h-6 items-center  p-4 rounded text-white text-xs font-bold">
+                        0
+                      </span>
+                      <span className="text-nowrap">Answered for revisit</span>
+                    </div>
+                    <div className="flex gap-2 items-center col-span-6"></div>
+                  </div>
+                  <div className="bg-indigo-600 text-white flex gap-2 px-4 py-2 mb-4">
+                    <span className="font-semibold">SECTION :</span>
+                    <span>{totalQuestions[0]?.category}</span>
+                  </div>
+                  <div className="px-4 flex flex-col gap-4">
+                    <div className="gap-4 grid grid-cols-12">
+                      {totalQuestions?.map((data, index) => (
+                        <div
+                          key={data}
+                          className={`font-bold text-center  border border-gray-300 p-1 px-3 py-2 rounded text-xs col-span-2 cursor-pointer ${
+                            saveAndNext.includes(data.id) === true
+                              ? 'bg-green-500 text-white'
+                              : markedForRevisit.includes(data.id) === true
+                              ? 'bg-violet-700 text-white'
+                              : 'bg-white'
+                          }`}
+                          onClick={() => {
+                            handlePagination(data.id);
+                            handleValue(data.id);
+                          }}
+                        >
+                          {data.id}
+                        </div>
+                      ))}
+                    </div>
+                    <div></div>
+                  </div>
+                </div>
+                <div className="border-gray-300 border-t bottom-0 p-4 sticky">
+                  <button className="inline-flex items-center justify-center w-full py-2 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-600 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
+                    Final Submit
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          {/* <Pagination /> */}
         </div>
-      </div>
+      )}
     </div>
   );
 };

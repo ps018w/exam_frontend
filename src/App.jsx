@@ -2,7 +2,7 @@
 // import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 // import Template from './components/Layout/Template';
 import TemplateView from './components/Layout/TemplateView';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginView from './components/login/LoginView';
 import SignupPage from './components/SignupPage/SignupPage';
 import Category from './components/CategoryTemplate/Category';
@@ -21,7 +21,7 @@ import Category from './components/CategoryTemplate/Category';
 const App = () => {
   return (
     <>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<LoginView />} />
           <Route path="/Category" element={<Category />} />
@@ -29,7 +29,7 @@ const App = () => {
           <Route path="/home/:id" element={<TemplateView />} />
           {/* <TemplateView /> */}
         </Routes>
-      </Router>
+      </BrowserRouter>
     </>
   );
 };
