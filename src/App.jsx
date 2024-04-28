@@ -23,10 +23,10 @@ const App = () => {
     <>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<LoginView />} />
-          <Route path="/Category" element={<Category />} />
-          <Route path="/SingUp" element={<SignupPage />} />
-          <Route path="/home/:id" element={<TemplateView />} />
+          <Route exact path="/" component={LoginView} />
+          <Route path="/Category" component={Category} />
+          <Route path="/SingUp" component={SignupPage} />
+          <Route path="/home/:id" component={TemplateView} />
           {/* <TemplateView /> */}
         </Routes>
       </BrowserRouter>
